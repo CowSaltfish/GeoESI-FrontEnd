@@ -49,7 +49,7 @@
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">数据</a>
         <dl class="layui-nav-child">
-          <dd><a onclick="addShp()">添加shp</a></dd>
+          <dd><a onclick="addShp()">导入地图数据</a></dd>
           <dd><a onclick="test()">导入地层年代表</a></dd>
           <dd><a href="">导入知识图谱</a></dd>
         </dl>
@@ -73,26 +73,27 @@
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">地质事件类型解析</a>
         <dl class="layui-nav-child">
-          <dd><a onclick="parseGeoEvByTime()">地质关系创建</a></dd>
           <dd><a onclick="identifyOneFault()">断层构造个体识别</a></dd>
-          <dd><a onclick="identifyFold()">褶皱构造识别</a></dd>
           <dd><a onclick="identifyFaults()">断层构造组合识别</a></dd>
-          <dd><a onclick="identifyCircStruc()">环形构造识别</a></dd>
+          <dd><a onclick="identifyFold()">褶皱构造识别</a></dd>
+          <dd><a onclick="identifyCircStruc()">穹窿盆地方山识别</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">地质事件时序解析</a>
         <dl class="layui-nav-child">
+          <dd><a onclick="parseGeoEvByTime()">地质关系创建</a></dd>
           <dd><a onclick="parseGeoEvByTime()">时间关系创建</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">冲突检测与校正</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">事件时间序列生成</a></dd>
+          <dd><a onclick="parseGeoEvByTime()">时间区间解析</a></dd>
+          <dd><a onclick="parseGeoEvByTime()">冲突检测校正</a></dd>
+          <dd><a onclick="parseGeoEvByTime()">时间序列生成</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">配置</a>
         <dl class="layui-nav-child">
-          <dd><a onclick="nodeRelaVisual()">可视化设置</a></dd>
           <dd><a onclick="nodeRelaVisual()">本体模型管理</a></dd>
+          <dd><a onclick="nodeRelaVisual()">可视化设置</a></dd>
           <!-- <dd><a onclick="KGDemo()">实例知识图谱展示Demo</a></dd> -->
           <!-- <dd><a id="exportKGJson">导出图谱</a></dd> -->
           <!-- <dd><a id="exportPic">导出图片</a></dd> -->
@@ -103,7 +104,7 @@
         <a href="javascript:;">帮助</a>
         <dl class="layui-nav-child">
           <dd><a>系统帮助</a></dd>
-          <dd><a href="">关于GeoEventKG</a></dd>
+          <dd><a>关于GeoESI System</a></dd>
         </dl>
       </li>
     </ul>
@@ -468,6 +469,7 @@
         <button id="" type="button" class="layui-btn layui-btn">选择文件</button>
       </div>
     </div>
+
     <div class="layui-form-item">
       <label for="" class="layui-form-label">构建方式</label>
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
@@ -486,6 +488,7 @@
           </select>
       </div>
     </div>
+
     <div class="layui-form-item">
       <label for="" class="layui-form-label">名称</label>
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
