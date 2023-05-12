@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日期与时间选择</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>年选择器</span>
+        <input type="text" class="layui-input" id="test1">
+    </div>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>年月选择器</span>
+        <input type="text" class="layui-input" id="test2">
+    </div>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>日期选择器</span>
+        <input type="text" class="layui-input" id="test3">
+    </div>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>时间选择器</span>
+        <input type="text" class="layui-input" id="test4">
+    </div>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>日期时间选择器</span>
+        <input type="text" class="layui-input" id="test5">
+    </div>
+
+    <hr>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>自定义日期格式</span>
+        <input type="text" class="layui-input" id="test6">
+    </div>
+
+    <hr>
+    <div class="layui-inline"> <!-- 注意：这一层元素并不是必须的 -->
+        <span>自定义日期格式</span>
+        <input type="text" class="layui-input" id="test7">
+    </div>
+
+    <script type="text/javascript">
+        layui.use('laydate', function(){
+            var laydate = layui.laydate;
+
+            //年选择器
+            laydate.render({
+                elem: '#test1', //指定元素
+                type:'year'
+            });
+            // 年月选择器
+            laydate.render({
+                elem: '#test2', //指定元素
+                type:'month'
+            });
+            // 日期选择器
+            laydate.render({
+                elem: '#test3', //指定元素
+                type:'date'
+            });
+            // 时间选择器
+            laydate.render({
+                elem: '#test4', //指定元素
+                type:'time'
+            });
+            // 日期时间选择器
+            laydate.render({
+                elem: '#test5', //指定元素
+                type:'datetime'
+            });
+
+            //自定义日期格式
+            laydate.render({ 
+                elem: '#test6'
+                ,format: 'yyyy年MM月dd日' //可任意组合
+            });
+
+            //传入符合format格式的字符给初始值
+            laydate.render({ 
+                elem: '#test7'
+                ,value: '2018-08-18' //必须遵循format参数设定的格式
+            });
+        });
+    </script>
+</body>
+</html>

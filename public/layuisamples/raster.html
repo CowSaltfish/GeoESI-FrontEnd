@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>栅格系统</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+
+    <!-- 栅格系统
+            列组合
+                1、定义行 .layui-row
+                2、定义列 .layui-col-md*，*为列的数量，可以是1-12中的任何一个数字
+                    md是不同屏幕的标识（超小屏幕xs、小屏幕sm、中等屏幕md、大屏幕lg）
+                3、每一行被均分为12列，列的总数不能超过12，否则会自动换行
+                4、响应式规则
+                    栅格会自动根据屏幕的分辨率选择对应的样式效果
+            列边距
+                .layui-col-space*，*代表的是px值（1-30） 要实现列边距大于30的效果，可以借助列偏移来实现
+            列偏移（向右偏移）
+                .layui-col-offset*，*代表的是列的数量
+            列嵌套
+                列中可以无限嵌套列，即一行中每个列元素都可以被划分为12份
+    -->
+
+    <!-- 布局容器 -->
+    <div class="layui-container">
+        <!-- 定义行 -->
+        <div class="layui-row">
+            <!-- 定义列 -->
+            <div class="layui-col-md5" style="background-color: rgb(230, 119, 29);">内容的5/12</div>
+            <div class="layui-col-md7" style="background-color: rgb(216, 188, 30);">内容的7/12</div>
+        </div>
+        <div class="layui-row">
+            <!-- 定义列 -->
+            <div class="layui-col-md6" style="background-color: rgb(47, 214, 41);">内容的1/2</div>
+            <div class="layui-col-md6" style="background-color: rgb(44, 182, 224);">内容的1/2</div>
+        </div>
+
+        <!-- 响应式规则 -->
+        <hr>
+        <h3>平板、桌面端的不同表现</h3>
+        <div class="layui-row">
+            <div class="layui-col-sm6 layui-col-md4" style="background-color: thistle;">
+                平板>=768px：6/12 | 桌面端>=992px：4/12
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-sm4 layui-col-md6" style="background-color: mediumaquamarine;">
+                平板>=768px：4/12 | 桌面端>=992px：6/12
+            </div>
+        </div>
+        <div class="layui-row">
+            <div class="layui-col-sm12 layui-col-md8" style="background-color: coral;">
+                平板>=768px：12/12 | 桌面端>=992px：8/12
+            </div>
+        </div>
+
+        <hr>
+        <h3>列边距</h3>
+        <div class="layui-row layui-col-space10">
+            <div class="layui-col-md4" style="background-color: rgb(228, 176, 34);">
+                <!-- <div style="background-color: rgb(228, 176, 34);">4</div> -->
+                4
+                <!-- 直接在列上加背景颜色会使整个列的部分都填充为对应的颜色，无法看出.layui-col-space的应用效果
+                可以为列中的元素加背景颜色 -->
+            </div>
+            <div class="layui-col-md4">
+                <div style="background-color: rgb(100, 212, 35);">4</div>
+            </div>
+            <div class="layui-col-md4">
+                <div style="background-color: rgb(119, 28, 194);">4</div>
+            </div>
+        </div>
+
+        <hr>
+        <h3>列偏移</h3>
+        <div class="layui-row">
+            <div class="layui-col-md3" style="background-color: rgb(199, 82, 36);">3</div>
+            <!-- 上面的div中如果不写内容（如上面的3），.layui-col-md3的样式也不会生效 -->
+            <div class="layui-col-md3 layui-col-md-offset6" style="background-color: rgb(223, 186, 24);">向右偏移了三列</div>
+        </div>
+
+        <hr>
+        <h3>列嵌套</h3>
+        <div class="layui-row">
+            <div class="layui-col-md6" style="background-color: rgb(62, 203, 221);">
+                <div class="layui-col-md4" style="background-color: rgb(228, 176, 34);">
+                    4
+                </div>
+                <div class="layui-col-md5" style="background-color: rgb(100, 212, 35);">
+                    5
+                </div>
+                <div class="layui-col-md3" style="background-color: rgb(119, 28, 194);">
+                    3
+                </div>
+            </div>
+        </div>
+
+    </div>
+</body>
+</html>

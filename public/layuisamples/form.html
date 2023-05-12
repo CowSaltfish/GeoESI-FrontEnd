@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表单</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    
+    <!-- 表单
+            常用属性
+                required 浏览器规定的必填字段
+                lay-verify 需要验证的类型（required表示必填项）
+                .layui-input .layui-button 提供的通用的样式
+                .layui-input-block 占据全部宽度
+                .layui-input-inline 占据部分宽度
+            文本框
+                placeholder 当文本框为空时，默认显示的文本信息
+                autocomplete 表单元素是否自动填充（党浏览器的缓存中存在相同name的属性时，会填充）
+            通过追加 layui-form-pane的class来设定表单的方框风格
+    -->
+
+    <!-- 在一个容器中设定 class='layui-form' 来标识一个表单元素块 -->
+    <form action="" class="layui-form layui-form-pane">
+        <!-- 基本的行区块结构，一个行区块表示一个表单项 -->
+        <!-- 输入框 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">标题</label>
+            <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+            <div class="layui-input-inline">
+                <!-- 文本框 -->
+                <input type="text" name="title" required lay-verify="required" class="layui-input" placeholder="请输入标题">
+            </div>
+        </div>
+
+        <!-- 下拉框 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">城市</label>
+            <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+            <div class="layui-input-inline">
+                <!-- 下拉选择框
+                        1、通过selected属性设置默认选中项
+                        2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                        3、可以通过 optgroup 标签给select分组
+                        4、通过lay-search属性开启搜索匹配功能
+                -->
+                <select name="city" lay-verify="required" id="">
+                    <option value="">请选择一个城市</option>
+                    <option value="010">北京</option>
+                    <option value="021" selected>上海</option>
+                    <option value="0571" disabled>杭州</option>
+                </select>
+            </div>
+        </div>
+        <!-- 下拉框 标签分组 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">问题</label>
+            <div class="layui-input-inline">
+                <select name="quiz">
+                    <option value="">请选择</option>
+                    <optgroup label="城市记忆">
+                      <option value="你工作的第一个城市">你工作的第一个城市？</option>
+                    </optgroup>
+                    <optgroup label="学生时代">
+                      <option value="你的工号">你的工号？</option>
+                      <option value="你最喜欢的老师">你最喜欢的老师？</option>
+                    </optgroup>
+                </select>
+            </div>
+        </div>
+        <!-- 下拉框 开启搜索匹配功能 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">select</label>
+            <div class="layui-input-inline">
+                <select name="city" lay-verify="" lay-search>
+                    <option value="">请选择</option>
+                    <option value="010">layer</option>
+                    <option value="021">form</option>
+                    <option value="0571">layim</option>
+                  </select>
+            </div>
+        </div>
+
+        <!-- 复选框 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">爱好</label>
+            <div class="layui-input-block">
+                <!-- 复选框
+                        将上面的 inline 换成 block 可以让复选框在一行上显示
+                        1、通过title属性设置自定义文本（如果不需要显示文本，则不设置title属性）
+                        2、通过checked属性设置被选中的项
+                        3、通过lay-skin属性设置复选框的样式效果（lay-skin="primary"表示原始效果）
+                        4、通过disabled属性禁用元素
+                -->
+                <input type="checkbox" name="hobby" title="写作" lay-skin="primary" value="write" checked>
+                <input type="checkbox" name="hobby" title="发呆" lay-skin="primary" value="donothing" >
+                <input type="checkbox" name="hobby" title="禁用" lay-skin="primary" disabled>
+                <br>
+                <!-- 开关
+                        将复选框，设置lay-skin="switch"形成开关风格
+                        1、通过lay-text="打开的值|关闭的值"来设定开关的两种状态的文本，通过“|”分隔
+                        2、通过checked属性设置默认打开状态
+                        3、通过disabled属性禁用开关
+                        4、通过value属性设置选中的值
+                -->
+                <input type="checkbox" name="hobby" lay-skin="switch">
+                <input type="checkbox" name="hobby" lay-skin="switch" lay-text="ON|OFF" checked>
+                <input type="checkbox" name="this" lay-skin="switch" lay-text="开启|关闭" value="age">
+                <input type="checkbox" name="hobby" lay-skin="switch" disabled>
+            </div>
+        </div>
+
+        <!-- 单选框
+                1、通过checked设置默认选中项
+                2、通过disabled属性禁用项
+                3、通过value属性设置选中的值
+        -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">性别</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="male" title="男" checked>
+                <input type="radio" name="sex" value="female" title="女">
+                <input type="radio" name="sex" value="" title="中性" disabled>
+            </div>
+        </div>
+
+        <!-- 文本域 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">简介</label>
+            <div class="layui-input-inline">
+                <textarea name="remark" required lay-verify="required" placeholder="请输入个人简介" class="layui-textarea" id="" cols="30" rows="10"></textarea>
+            </div>
+        </div>
+
+        <!-- 组装行内表单
+                class="layui-inline"：定义外层行内
+                class="layui-input-inline"：定义内层行内
+        -->
+        <div class="layui-form-item">
+            <!-- 定义外层行内 -->
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">范围</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="price_min" placeholder="最低价" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid">-</div>
+                <div class="layui-input-inline">
+                    <input type="text" name="price_max" placeholder="最高价" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label for="" class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="pwd" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+        </div>
+
+        <!-- 忽略美化渲染 -->
+        <div class="layui-form-item">
+            <label for="" class="layui-form-label">原始效果</label>
+            <div class="layui-input-block">
+                <input type="radio" name="sex" value="male" title="男" checked lay-ignore>
+                <input type="radio" name="sex" value="female" title="女">
+                <input type="radio" name="sex" value="" title="中性" disabled>
+            </div>
+        </div>
+
+        <!-- 按钮 -->
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+              <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+              <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </form>
+
+    <script type="text/javascript">
+        layui.use('form', function(){
+            var form = layui.form;
+        });
+    </script>
+</body>
+</html>

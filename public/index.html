@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <title>系统界面</title>
+  <script src="src/jquery/jquery-3.4.1.min.js"></script>
+  <link rel="stylesheet" href="src/layui/css/layui.css">
+  <script src="src/layui/layui.js"></script>
+  <link rel="stylesheet" href="src/ol/ol.css">
+  <script src="src/ol/ol.js"></script>
+
+  <!-- <script src="https://gw.alipayobjects.com/os/antv/pkg/_antv.g6-3.1.1/build/g6.js"></script> -->
+  <script src="https://gw.alipayobjects.com/os/lib/antv/g6/4.3.11/dist/g6.min.js"></script>
+  <!-- <script src="https://gw.alipayobjects.com/os/antv/assets/lib/d3-4.13.0.min.js"></script> -->
+  <script type="text/javascript" src="http://api.tianditu.gov.cn/api?v=4.0&tk=d0cf74b31931aab68af181d23fa23d8d"></script>
+
+  <style>::-webkit-scrollbar{display:none;}html,body{overflow:hidden;margin:0;}</style>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+  <div class="layui-header">
+    <div class="layui-logo layui-hide-xs layui-bg-black">地质事件自动解析系统</div>
+    <!-- 头部区域（可配合layui 已有的水平导航） -->
+    <ul class="layui-nav layui-layout-left">
+      <!-- 移动端显示 -->
+      <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+        <i class="layui-icon layui-icon-spread-left"></i>
+      </li>
+      
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">文件</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">新建</a></dd>
+          <dd><a type="button" id="openFile">打开</a></dd>
+          <dd><a href="">保存</a></dd>
+          <dd><a href="">另存为</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">视图</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">鹰眼</a></dd>
+          <dd><a href="">编辑</a></dd>
+          <dd><a href="">布局视图</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">数据</a>
+        <dl class="layui-nav-child">
+          <dd><a onclick="addShp()">添加shp</a></dd>
+          <dd><a onclick="test()">导入地层年代表</a></dd>
+          <dd><a href="">导入知识图谱</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">场景模式管理</a>
+        <dl class="layui-nav-child">
+          <dd><a href="">新建</a></dd>
+          <dd><a href="">管理</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">知识图谱操作</a>
+        <dl class="layui-nav-child">
+          <!-- <dd><a onclick="createKG()">初始知识图谱构建</a></dd> -->
+          <dd><a onclick="constructKG()">知识图谱构建</a></dd>
+          <dd><a onclick="fuseKG()">知识图谱融合</a></dd>
+          <dd><a onclick="queryByKnow()">知识图谱查询</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">地质事件类型解析</a>
+        <dl class="layui-nav-child">
+          <dd><a onclick="parseGeoEvByTime()">地质关系创建</a></dd>
+          <dd><a onclick="identifyOneFault()">断层构造个体识别</a></dd>
+          <dd><a onclick="identifyFold()">褶皱构造识别</a></dd>
+          <dd><a onclick="identifyFaults()">断层构造组合识别</a></dd>
+          <dd><a onclick="identifyCircStruc()">环形构造识别</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">地质事件时序解析</a>
+        <dl class="layui-nav-child">
+          <dd><a onclick="parseGeoEvByTime()">时间关系创建</a></dd>
+          <dd><a onclick="parseGeoEvByTime()">冲突检测与校正</a></dd>
+          <dd><a onclick="parseGeoEvByTime()">事件时间序列生成</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">配置</a>
+        <dl class="layui-nav-child">
+          <dd><a onclick="nodeRelaVisual()">可视化设置</a></dd>
+          <dd><a onclick="nodeRelaVisual()">本体模型管理</a></dd>
+          <!-- <dd><a onclick="KGDemo()">实例知识图谱展示Demo</a></dd> -->
+          <!-- <dd><a id="exportKGJson">导出图谱</a></dd> -->
+          <!-- <dd><a id="exportPic">导出图片</a></dd> -->
+          <!-- <dd><a id="customizeLayout">自定义布局</a></dd> -->
+        </dl>
+      </li>
+      <li class="layui-nav-item layui-hide-xs">
+        <a href="javascript:;">帮助</a>
+        <dl class="layui-nav-child">
+          <dd><a>系统帮助</a></dd>
+          <dd><a href="">关于GeoEventKG</a></dd>
+        </dl>
+      </li>
+    </ul>
+    <!-- <ul class="layui-nav layui-layout-right">
+      <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+        <a href="javascript:;">
+          <img src="//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" class="layui-nav-img">
+          tester
+        </a>
+        <dl class="layui-nav-child">
+          <dd><a href="">Your Profile</a></dd>
+          <dd><a href="">Settings</a></dd>
+          <dd><a href="">Sign out</a></dd>
+        </dl>
+      </li>
+      <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+        <a href="javascript:;">
+          <i class="layui-icon layui-icon-more-vertical"></i>
+        </a>
+      </li>
+    </ul> -->
+  </div>
+  
+  <div class="layui-side layui-bg-black">
+    <div class="layui-side-scroll">
+      <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+      <ul class="layui-nav layui-nav-tree" lay-filter="test">
+        <li class="layui-nav-item">
+          <a class="" href="javascript:;">地图图层</a>
+          <dl id="layerList" class="layui-nav-child">
+            <!-- <dd><a href="javascript:;">layer1</a></dd>
+            <dd><a href="javascript:;">layer2</a></dd>
+            <dd><a href="javascript:;">layer3</a></dd> -->
+          </dl>
+        </li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">知识图谱</a>
+          <dl id="graphList" class="layui-nav-child">
+            <!-- <dd><a href="javascript:;">Knowledge Graph 1</a></dd>
+            <dd><a href="javascript:;">Knowledge Graph 2</a></dd>
+            <dd><a href="javascript:;">Knowledge Graph 3</a></dd> -->
+          </dl>
+        </li>
+        <!-- <li class="layui-nav-item"><a href="javascript:;">click menu item</a></li>
+        <li class="layui-nav-item"><a href="">the links</a></li> -->
+      </ul>
+    </div>
+  </div>
+  
+  <div class="layui-body">
+    <!-- 内容主体区域 -->
+    <div class="show" id="map"></div>
+    <div class="none" id="graph"></div>
+    <div class="none" id="mountNode">
+      <!-- <div style="top: 100px;right: 100px;position: absolute;font-size: 30px;">
+        <ul>
+          <li style="color: #CCCC99;">棕色--地层界线</li>
+          <li style="color: #00CCFF;">蓝色--地层</li>
+          <li style="color: #FF9900;">橙色--地质事件</li>
+          <li style="color: #88EE88;">绿色--断层</li>
+        </ul>
+      </div> -->
+    </div>
+    <!-- <div class="layui-tab layui-tab-brief" style="padding: 0px;margin: 0px;">
+      <div class="layui-tab-content" style="padding: 0px;">
+          <div class="layui-tab-item layui-show" id="map"></div>
+          <div class="layui-tab-item">知识图谱展示</div>
+      </div>
+      <ul class="layui-tab-title" style="position: absolute;bottom: 0px;background-color: #fff;">
+          <li class="layui-this">地图</li>
+          <li>知识图谱</li>
+      </ul>
+    </div> -->
+  </div>
+  
+  <div class="layui-footer">
+    <!-- 底部固定区域 -->
+    <!-- 底部固定区域 -->
+    <span id="openmap" class="switch">地图</span>
+    <span>&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+    <span id="opengraph" class="switch">知识图谱</span>
+  </div>
+</div>
+
+<div id="createontology" style="display: none;">
+  <!-- <h3>wuhu</h3> -->
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <!-- 输入框 -->
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">名称</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 文本框 -->
+          <input id="ontoName" type="text" name="title" required lay-verify="required" class="layui-input" placeholder="请输入本体名称">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="confirmOntologySettings" type="button" lay-submit class="layui-btn layui-btn-sm layui-col-md-offset3">确定</button>
+        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="createknowledgegraph" style="display: none;">
+  <!-- <h3>wuhu</h3> -->
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">数据源</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="KGSource" name="mode" required lay-verify="required">
+              <option value="">请选择数据源</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">名称</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 文本框 -->
+          <input id="KGName" type="text" name="title" required lay-verify="required" class="layui-input" placeholder="请输入知识图谱名称">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">布局方式</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="selectlayout" name="mode" required lay-verify="required">
+              <option value="">请选择布局方式</option>
+              <option value="fruchterman">随机</option>
+              <option value="force">力导向</option>
+              <option value="circular">环形</option>
+              <option value="radial">辐射形</option>
+              <option value="concentric">同心圆</option>
+              <option value="dagre">层次</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">图例位置</label>
+      <div class="layui-input-block">
+          <select id="selectlegendpos" name="mode" required lay-verify="required">
+              <option value="">请选择图例的位置</option>
+              <option value="top">上</option>
+              <option value="top-left">上左</option>
+              <option value="top-right">上右</option>
+              <option value="right">右</option>
+              <option value="right-top">右上</option>
+              <option value="right-bottom">右下</option>
+              <option value="left">左</option>
+              <option value="left-top">左上</option>
+              <option value="left-bottom">左下</option>
+              <option value="bottom">下</option>
+              <option value="bottom-left">下左</option>
+              <option value="bottom-right">下右</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="confirmKGSettings" type="button" lay-submit class="layui-btn layui-btn-sm layui-col-md-offset3" onclick="KGDemo()">确定</button>
+        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="customizeSettings" style="display: none;">
+  <!-- <h3>wuhu</h3> -->
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">布局方式</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select name="mode" lay-verify="required" id="graphlayout">
+              <option value="">请选择布局方式</option>
+              <option value="random">随机</option>
+              <option value="force">力导向</option>
+              <option value="circular">环形</option>
+              <option value="radial">辐射形</option>
+              <option value="concentric">同心圆</option>
+              <option value="dagre">层次</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">图例位置</label>
+      <div class="layui-input-block">
+          <select name="mode" lay-verify="required" id="graphlegend">
+              <option value="">请选择图例的位置</option>
+              <option value="top">上</option>
+              <option value="top-left">上左</option>
+              <option value="top-right">上右</option>
+              <option value="right">右</option>
+              <option value="right-top">右上</option>
+              <option value="right-bottom">右下</option>
+              <option value="left">左</option>
+              <option value="left-top">左上</option>
+              <option value="left-bottom">左下</option>
+              <option value="bottom">下</option>
+              <option value="bottom-left">下左</option>
+              <option value="bottom-right">下右</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button type="button" class="layui-btn layui-btn-sm layui-col-md-offset3"  id="confirmSettings">确定</button>
+        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="addShp" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label for="" class="layui-form-label">输入shp</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="shpName" type="text" name="title" required lay-verify="required" class="layui-input" placeholder="请输入shp文件">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <button id="selectShp" type="button" class="layui-btn layui-btn-sm">选择文件</button>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">shp来源</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="shpSource" name="mode" required lay-verify="required">
+              <option value="">请选择shp来源</option>
+              <option value="plan">平面图</option>
+              <option value="section">剖面图</option>
+              <option value="boundary">地质界线</option>
+          </select>
+      </div>
+    </div>
+    <!-- <div class="layui-form-item">
+      <label for="" class="layui-form-label">投影坐标系</label>
+      <div class="layui-input-block">
+          <select id="projection" name="mode" required lay-verify="required">
+              <option value="">请选择投影坐标系</option>
+              <option value="3857">3857</option>
+              <option value="4326">4326</option>
+          </select>
+      </div>
+    </div> -->
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="uploadShp" type="button" lay-submit class="layui-btn layui-btn-sm layui-col-md-offset3">确定</button>
+        <button type="reset" class="layui-btn layui-btn-primary layui-btn-sm" onclick="clearShpName()">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="manageOntology" style="display: none;">
+  <br>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>本体名</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <tbody id="ontoTB">
+    </tbody>
+  </table>
+  <!-- <br> -->
+  <!-- <div>
+    <button>确定</button>
+  </div> -->
+</div>
+
+<div id="queryByOnto" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">待查询本体</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="ontologyName" name="mode" required lay-verify="required">
+              <!-- <option value="">请选择本体</option> -->
+          </select>
+      </div>
+    </div>
+    <!-- <div class="layui-form-item">
+      <label for="" class="layui-form-label">投影坐标系</label>
+      <div class="layui-input-block">
+          <select id="projection" name="mode" required lay-verify="required">
+              <option value="">请选择投影坐标系</option>
+              <option value="3857">3857</option>
+              <option value="4326">4326</option>
+          </select>
+      </div>
+    </div> -->
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button onclick="queryByOntology()" type="button" lay-submit class="layui-btn layui-btn-sm layui-col-md-offset3">确定</button>
+        <button id="ontoQueryReset" type="reset" class="layui-btn layui-btn-primary layui-btn-sm">重置</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="constructKG" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item layui-row">
+      <div class="layui-inline layui-col-md9">
+        <label for="" class="layui-form-label">数据源</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入数据源">
+        </div>
+      </div>
+      <div class="layui-inline layui-col-md2">
+        <button id="" type="button" class="layui-btn layui-btn">选择文件</button>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">构建方式</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请选择构建方式</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">名称</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 文本框 -->
+          <input id="" type="text" name="title" class="layui-input" placeholder="请输入知识图谱名称">
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeCKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="fuseKG" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">子图名称</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required" lay-filter="subGraphs">
+              <option value="">请选择融合子图</option>
+              <option value="shapefile1">shapefile1</option>
+              <option value="shapefile2">shapefile2</option>
+              <option value="shapefile3">shapefile3</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-row">
+      <div class="layui-col-md8 layui-col-md-offset3" style="height: 200px;border: 1px solid rgb(198, 196, 196);background-color: rgb(222, 220, 220);">
+        <table class="layui-table" style="background-color: rgb(222, 220, 220);">
+          <colgroup>
+            <col width="150">
+            <!-- <col width="200">
+            <col> -->
+          </colgroup>
+          <!-- <thead>
+            <tr>
+              <th>昵称</th>
+              <th>加入时间</th>
+              <th>签名</th>
+            </tr> 
+          </thead> -->
+          <tbody id="subGraphTB">
+            <!-- <tr>
+              <td>人生就像是一场修行</td>
+            </tr>
+            <tr>
+              <td>芜湖</td>
+            </tr> -->
+          </tbody>
+        </table>
+        <!-- <table id="subGraphTable" lay-filter="test"></table> -->
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">融合类型</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请选择融合类型</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item layui-row">
+      <div class="layui-inline layui-col-md9">
+        <label for="" class="layui-form-label">剖面线数据</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入剖面线数据">
+        </div>
+      </div>
+      <div class="layui-inline layui-col-md2">
+        <button id="" type="button" class="layui-btn layui-btn">选择文件</button>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeFKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="identifyOneFault" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">识别范围</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeIOF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="identifyFold" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">识别范围</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeIF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="queryByKnow" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item layui-form-text">
+      <label class="layui-form-label">文本域</label>
+      <div class="layui-input-block">
+        <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeQBK" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="parseGeoEvByTime" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">识别范围</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">解析类型</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请选择解析类型</option>
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closePGE" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="identifyFaults" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">识别范围</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">进直界线阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="170">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">走向差值阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="10">
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">长度比值阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="5">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">分布偏角阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="10">
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset8">确定</button>
+        <button id="closeIFS" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="identifyCircStruc" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">识别范围</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">面积比阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="170">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">长短袖比阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="10">
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">圆度方差阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="5">
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label" style="width: 150px;">地层倾角阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-inline" style="width: 200px;">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="10">
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset8">确定</button>
+        <button id="closeICS" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="nodeRelaVisual" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">设置对象</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required" lay-filter="subGraphs">
+              <option value="">请选择设置节点或关系</option>
+              <option value="shapefile1">节点</option>
+              <option value="shapefile2">关系</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">类型</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required" lay-filter="subGraphs">
+              <option value="">请添加对象类型</option>
+              <option value="shapefile1">对象1</option>
+              <option value="shapefile2">对象2</option>
+              <option value="shapefile3">对象3</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-row">
+      <div class="layui-col-md8 layui-col-md-offset3" style="height: 200px;border: 1px solid rgb(198, 196, 196);background-color: rgb(222, 220, 220);">
+        <table class="layui-table" style="background-color: rgb(222, 220, 220);">
+          <colgroup>
+            <col width="150">
+            <!-- <col width="200">
+            <col> -->
+          </colgroup>
+          <!-- <thead>
+            <tr>
+              <th>昵称</th>
+              <th>加入时间</th>
+              <th>签名</th>
+            </tr> 
+          </thead> -->
+          <tbody id="objTypeTB">
+            <!-- <tr>
+              <td>人生就像是一场修行</td>
+            </tr>
+            <tr>
+              <td>芜湖</td>
+            </tr> -->
+          </tbody>
+        </table>
+        <!-- <table id="subGraphTable" lay-filter="test"></table> -->
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-inline">
+        <label class="layui-form-label">尺寸</label>
+        <div class="layui-input-inline">
+          <select name="modules" lay-verify="required" lay-search="">
+            <option value="">10</option>
+            <option value="1">8</option>
+            <option value="2">9</option>
+            <option value="3">10</option>
+            <option value="4">11</option>
+            <option value="5">12</option>
+            <option value="6">13</option>
+            <option value="7">14</option>
+            <option value="8">15</option>
+            <option value="9">16</option>
+            <option value="10">17</option>
+            <option value="11">18</option>
+            <option value="12">19</option>
+            <option value="13">20</option>
+            <option value="14">21</option>
+            <option value="15">22</option>
+            <option value="16">23</option>
+            <option value="17">24</option>
+            <option value="18">25</option>
+            <option value="19">26</option>
+            <option value="20">27</option>
+          </select>
+        </div>
+      </div>
+      <div class="layui-inline">
+        <label class="layui-form-label">颜色</label>
+        <div class="layui-input-inline" style="width: 120px;">
+          <input type="text" value="" placeholder="请选择颜色" class="layui-input" id="test-form-input">
+        </div>
+      </div>
+      <div class="layui-inline" style="left: -11px;">
+        <div id="test-form"></div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="closeNRV" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<script>
+//JS 
+layui.use(['element', 'layer', 'util'], function(){
+  var element = layui.element
+  ,layer = layui.layer
+  ,util = layui.util
+  ,$ = layui.$;
+  
+  //头部事件
+  util.event('lay-header-event', {
+    //左侧菜单事件
+    menuLeft: function(othis){
+      layer.msg('展开左侧菜单的操作', {icon: 0});
+    }
+    ,menuRight: function(){
+      layer.open({
+        type: 1
+        ,content: '<div style="padding: 15px;">处理右侧面板的操作</div>'
+        ,area: ['260px', '100%']
+        ,offset: 'rt' //右上角
+        ,anim: 5
+        ,shadeClose: true
+      });
+    }
+  });
+  
+});
+</script>
+<script src="js/map.js"></script>
+<script src="js/ontology.js"></script>
+<script src="js/knowledgegraph.js"></script>
+<script src="js/file.js"></script>
+<script src="js/data.js"></script>
+<script src="js/jqueryfile.js"></script>
+<!-- <script src="jssamples/testthree.js"></script> -->
+</body>
+</html>

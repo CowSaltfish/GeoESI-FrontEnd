@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>选项卡</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+
+    <!-- 选项卡
+            默认风格：layui-tab
+            简洁风格需要追加class：layui-tab-brief
+            卡片风格需要追加class：layui-tab-card
+            可以对父层容器设置属性“lay-allowClose='true'”来允许tab选项卡被删除
+    -->
+    
+    <h3>默认风格</h3>
+    <div class="layui-tab">
+        
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">内容1</div>
+            <div class="layui-tab-item">内容2</div>
+            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item">内容4</div>
+            <div class="layui-tab-item">内容5</div>
+        </div>
+        <ul class="layui-tab-title">
+            <li class="layui-this">网站设置</li>
+            <li>用户管理</li>
+            <li>权限分配</li>
+            <li>商品管理</li>
+            <li>订单管理</li>
+        </ul>
+    </div>
+
+    <hr>
+    <h3>简洁风格</h3>
+    <div class="layui-tab layui-tab-brief">
+        
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">内容1</div>
+            <div class="layui-tab-item">内容2</div>
+            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item">内容4</div>
+            <div class="layui-tab-item">内容5</div>
+        </div>
+        <ul class="layui-tab-title">
+            <li class="layui-this">网站设置</li>
+            <li>用户管理</li>
+            <li>权限分配</li>
+            <li>商品管理</li>
+            <li>订单管理</li>
+        </ul>
+    </div>
+
+    <hr>
+    <h3>卡片风格 自定义内容与标签的相对位置</h3>
+    <div class="layui-tab layui-tab-card" lay-allowClose="true">
+        
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">内容1</div>
+            <div class="layui-tab-item">内容2</div>
+            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item">内容4</div>
+            <div class="layui-tab-item">内容5</div>
+        </div>
+        <ul class="layui-tab-title">
+            <li class="layui-this">网站设置</li>
+            <li>用户管理</li>
+            <li>权限分配</li>
+            <li>商品管理</li>
+            <li>订单管理</li>
+        </ul>
+    </div>
+
+    <hr>
+    <h3>自定义</h3>
+    <div class="layui-tab layui-tab-brief">
+        
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">内容1</div>
+            <div class="layui-tab-item">内容2</div>
+            <div class="layui-tab-item">内容3</div>
+            <div class="layui-tab-item">内容4</div>
+            <div class="layui-tab-item">内容5</div>
+        </div>
+        <ul class="layui-tab-title" style="position: absolute;bottom: 0px;">
+            <li class="layui-this">网站设置</li>
+            <li>用户管理</li>
+            <li>权限分配</li>
+            <li>商品管理</li>
+            <li>订单管理</li>
+        </ul>
+    </div>
+    
+    
+
+
+    <script type="text/javascript">
+        // 选项卡，依赖element模块，否则无法进行功能性操作
+        layui.use('element', function(){
+            var element = layui.element;
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Topology Editor</title>
+
+    <link rel="stylesheet" href="src/layui/css/layui.css">
+    <script src="src/layui/layui.js"></script>
+
+    <style type="text/css">
+      body,
+      select {
+        font: 10pt sans;
+        width: 180px;
+      }
+      #mynetwork {
+        position: relative;
+        /* display: flex; */
+        width: 100vw;
+        height: 100vh;
+        /* border: 1px solid lightgray; */
+      }
+      table.legend_table {
+        font-size: 11px;
+        border-width: 1px;
+        border-color: #d3d3d3;
+        border-style: solid;
+      }
+      table.legend_table,
+      td {
+        border-width: 1px;
+        border-color: #d3d3d3;
+        border-style: solid;
+        padding: 2px;
+      }
+      div.table_content {
+        width: 80px;
+        text-align: center;
+      }
+      div.table_description {
+        width: 100px;
+      }
+
+      #operation {
+        font-size: 28px;
+      }
+      #node-popUp {
+        display: none;
+        position: absolute;
+        top: 350px;
+        left: 170px;
+        z-index: 299;
+        width: 300px;
+        height: 100px;
+        background-color: #f9f9f9;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #5394ed;
+        padding: 10px;
+        text-align: center;
+      }
+      #edge-popUp {
+        display: none;
+        position: absolute;
+        top: 350px;
+        left: 170px;
+        z-index: 299;
+        width: 250px;
+        height: 80px;
+        background-color: #f9f9f9;
+        border-style: solid;
+        border-width: 3px;
+        border-color: #5394ed;
+        padding: 10px;
+        text-align: center;
+      }
+      #export {
+        position: fixed;
+        top: 50px;
+        right: 50px;
+        z-index: 6;
+      }
+      #export:hover {
+        cursor: pointer;
+      }
+      #save {
+        position: fixed;
+        top: 50px;
+        right: 100px;
+        z-index: 6;
+      }
+      #save:hover {
+        cursor: pointer;
+      }
+    </style>
+
+    <script
+      type="text/javascript"
+      src="./src/visnetwork/vis-network.min.js"
+    ></script>
+
+    <script
+      type="text/javascript"
+      src="https://unpkg.com/alea@1.0.0/alea.js"
+    ></script>
+    <script type="text/javascript" src="./src/visnetwork/exampleUtil.js"></script>
+
+    <script type="text/javascript">
+      var latestOnto = "";
+      var operation = "";
+
+
+      var nodes = null;
+      var edges = null;
+      var network = null;
+      // randomly create some nodes and edges
+      var data = getScaleFreeNetwork(0);
+      var seed = 2;
+
+      // Id
+      var nodeId = 0;
+      // labels of nodes
+      var nodeLabels = {};
+      // var edgeLabels = {};
+      // properties_filter of nodes
+      var propFilter = {};
+
+      // type of edges
+      var edgeType = {};
+      // array of edge ids
+      var edgeIdArray = [];
+
+
+      // 
+      const _charStr = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+      /**
+       * 随机生成索引
+       * @param min 最小值
+       * @param max 最大值
+       * @param i 当前获取位置
+       */
+      function RandomIndex(min, max, i){
+          let index = Math.floor(Math.random()*(max-min+1)+min),
+              numStart = _charStr.length - 10;
+          //如果字符串第一位是数字，则递归重新获取
+          if(i==0&&index>=numStart){
+              index = RandomIndex(min, max, i);
+          }
+          //返回最终索引值
+          return index;
+      }
+
+      /**
+       * 随机生成字符串
+       * @param len 指定生成字符串长度
+       */
+      function getRandomString(len){
+          let min = 0, max = _charStr.length-1, _str = '';
+          // //判断是否指定长度，否则默认长度为15
+          // len = len || 15;
+          //循环生成字符串
+          for(var i = 0, index; i < len; i++){
+              index = RandomIndex(min, max, i);
+              _str += _charStr[index];
+          }
+          return _str;
+      }
+
+
+      function setDefaultLocale() {
+        var defaultLocal = navigator.language;
+        var select = document.getElementById("locale");
+        select.selectedIndex = 0; // set fallback value
+        for (var i = 0, j = select.options.length; i < j; ++i) {
+          if (select.options[i].getAttribute("value") === defaultLocal) {
+            select.selectedIndex = i;
+            break;
+          }
+        }
+      }
+
+      function destroy() {
+        if (network !== null) {
+          network.destroy();
+          network = null;
+        }
+      }
+
+      function draw() {
+        destroy();
+        nodes = [];
+        edges = [];
+
+        // create a network
+        var container = document.getElementById("mynetwork");
+        var options = {
+          layout: { randomSeed: seed }, // just to make sure the layout is the same when the locale is changed
+          locale: "en",
+          width: "100%",
+          height: "100%",
+          manipulation: {
+            addNode: function (data, callback) {
+              // filling in the popup DOM elements
+              document.getElementById("node-operation").innerText = "Add Node";
+              editNode(data, clearNodePopUp, callback);
+            },
+            editNode: function (data, callback) {
+              // filling in the popup DOM elements
+              document.getElementById("node-operation").innerText = "Edit Node";
+              editNode(data, cancelNodeEdit, callback);
+            },
+            addEdge: function (data, callback) {
+              if (data.from == data.to) {
+                var r = confirm("Do you want to connect the node to itself?");
+                if (r != true) {
+                  callback(null);
+                  return;
+                }
+              }
+              document.getElementById("edge-operation").innerText = "Add Edge";
+              editEdgeWithoutDrag(data, callback);
+            },
+            editEdge: {
+              editWithoutDrag: function (data, callback) {
+                document.getElementById("edge-operation").innerText =
+                  "Edit Edge";
+                editEdgeWithoutDrag(data, callback);
+              },
+            },
+            deleteEdge: function(data, callback){
+              var edgeId = data.id;
+              var edgeIndex = edgeIdArray.indexOf(edgeId);
+              edgeIdArray.splice(edgeIndex, 1);
+            }
+          },
+        };
+        network = new vis.Network(container, data, options);
+      }
+
+      function editNode(data, cancelAction, callback) {
+        // document.getElementById('node-id').value = nodeId;
+        document.getElementById("node-label").value = data.label;
+        document.getElementById("node-saveButton").onclick = saveNodeData.bind(
+          this,
+          data,
+          callback
+        );
+        document.getElementById("node-cancelButton").onclick =
+          cancelAction.bind(this, callback);
+        document.getElementById("node-popUp").style.display = "block";
+      }
+
+      // Callback passed as parameter is ignored
+      function clearNodePopUp() {
+        document.getElementById("node-saveButton").onclick = null;
+        document.getElementById("node-cancelButton").onclick = null;
+        document.getElementById("node-popUp").style.display = "none";
+      }
+
+      function cancelNodeEdit(callback) {
+        clearNodePopUp();
+        callback(null);
+      }
+
+      function saveNodeData(data, callback) {
+        console.log(data.id);
+        var tempStr = data.id;
+        console.log(typeof tempStr);
+        if(tempStr.length > 12){
+          data.id = nodeId;
+          nodeId++;
+          data.label = document.getElementById("node-label").value;
+          var tempArr = [];
+          tempArr.push(data.label);
+          nodeLabels[data.id] = tempArr;
+          // data.shape = document.getElementById('node-shape').value;
+          propFilter[data.id] = document.getElementById("node-prop").value;
+        }
+        else{
+          data.label = document.getElementById("node-label").value;
+          var tempArr = [];
+          tempArr.push(data.label);
+          nodeLabels[data.id] = tempArr;
+          // data.shape = document.getElementById('node-shape').value;
+          propFilter[data.id] = document.getElementById("node-prop").value;
+        }
+        clearNodePopUp();
+        callback(data);
+      }
+
+      function editEdgeWithoutDrag(data, callback) {
+        // filling in the popup DOM elements
+        // document.getElementById("edge-type").value = data.type;
+        // document.getElementById("edge-color").value = data.color;
+        document.getElementById("edge-saveButton").onclick = saveEdgeData.bind(
+          this,
+          data,
+          callback
+        );
+        document.getElementById("edge-cancelButton").onclick =
+          cancelEdgeEdit.bind(this, callback);
+        document.getElementById("edge-popUp").style.display = "block";
+      }
+
+      function clearEdgePopUp() {
+        document.getElementById("edge-saveButton").onclick = null;
+        document.getElementById("edge-cancelButton").onclick = null;
+        document.getElementById("edge-popUp").style.display = "none";
+      }
+
+      function cancelEdgeEdit(callback) {
+        clearEdgePopUp();
+        callback(null);
+      }
+
+      function saveEdgeData(data, callback) {
+        if (typeof data.to === "object") data.to = data.to.id;
+        if (typeof data.from === "object") data.from = data.from.id;
+        if(typeof data.id === "undefined"){
+          data.id = getRandomString(12);
+          edgeIdArray.push(data.id);
+          data.type = document.getElementById("edge-type").value;
+          edgeType[data.id] = data.type;
+          data.label = data.type;
+          data.arrows = "to";
+        }
+        else{
+          data.type = document.getElementById("edge-type").value;
+          edgeType[data.id] = data.type;
+          data.label = data.type;
+        }
+        // console.log(data.from);
+        // console.log(data.to);
+        // edgeLabels[data.id] = data.label;
+        // data.color = document.getElementById('edge-color').value;
+        // data.arrows = document.getElementById('edge-arrow').value;
+        // data.length = document.getElementById('edge-length').value;
+        clearEdgePopUp();
+        callback(data);
+      }
+
+      function init() {
+        // setDefaultLocale();
+
+        fetch('http://localhost:5000/upload/config/ing.json')
+        .then(response => response.json())
+        .then(jsonData => {
+
+          console.log(typeof jsonData);
+
+          latestOnto = jsonData.latestOnto;
+          operation = jsonData.operation;
+
+          document.title = latestOnto;
+
+          if(operation === "create"){
+            draw();
+          }
+
+          if(operation === "open"){
+            fetch('http://localhost:8081/ontology/findByName?ontologyName=' + latestOnto, {
+              method: 'post'
+            })
+            .then(res => res.json())
+            .then(ontoData => {
+
+              console.log(ontoData);
+
+              var nodes = ontoData.nodes;
+              var edges = ontoData.relationships;
+
+              var maxNodeId = 0;
+
+              var transformedNodes = nodes.map(item => {
+
+                var curNodeId = parseInt(item.id);
+                if(curNodeId > maxNodeId){
+                  maxNodeId = curNodeId;
+                }
+
+                //更新nodeLabels
+                nodeLabels[curNodeId] = item.labels;
+                //更新propFilter
+                if(typeof item.properties_filter !== "undefined"){
+                  propFilter[curNodeId] = item.properties_filter;
+                }
+                else{
+                  propFilter[curNodeId] = "optional";
+                }
+
+                return {
+                  x: item.x,
+                  y: item.y,
+                  id: curNodeId,
+                  label: item.labels[0]
+                }
+              })
+              
+
+              //更新nodeId
+              nodeId = maxNodeId + 1;
+
+              var transformedEdges = edges.map(item => {
+
+                var edgeId = getRandomString(12);
+                //更新edgeIdArray
+                edgeIdArray.push(edgeId);
+                //更新edgeType
+                edgeType[edgeId] = item.type;
+
+                return {
+                  id: edgeId,
+                  arrows: "to",
+                  from: parseInt(item.startNode),
+                  to: parseInt(item.endNode),
+                  label: item.type
+                }
+              });
+
+              //更新data
+              data = {
+                nodes: transformedNodes,
+                edges: transformedEdges
+              }
+
+              draw();
+
+            })
+            .catch(err => {
+                console.log(err);
+            })
+          }
+
+        })
+
+        // draw();
+      }
+
+      
+
+      const download = (fileName, blob) => {
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = fileName;
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+      };
+
+      // var downloadBtn = document.getElementById("export");
+      // downloadBtn.addEventListener("click", (event) => {
+      //   const fileName = "blob.txt";
+      //   const myBlob = new Blob(["一文彻底掌握 Blob Web API"], { type: "text/plain" });
+      //   download(fileName, myBlob);
+      // });
+
+      function test(){
+        // alert('Hello');
+        const fileName = "blob.json";
+        const myBlob = new Blob([JSON.stringify(data, null, 4)], { type: "application/json" });
+        download(fileName, myBlob);
+      }
+
+
+
+      function exportNetwork() {
+
+
+        
+
+
+        var nodes = objectToArray(network.getPositions());
+
+        // nodes.forEach(addConnections);
+
+        var edges = [];
+        var edgeId = nodeId;
+
+        for(var i=0;i<edgeIdArray.length;i++){
+          var edge = {};
+
+          var edgeIdStr = edgeIdArray[i];
+          var type = edgeType[edgeIdStr];
+
+          var startAndEnd = network.getConnectedNodes(edgeIdStr);
+          console.log(edgeIdStr);
+          console.log(startAndEnd);
+          var startNode = startAndEnd[0];
+          var endNode = startAndEnd[1];
+
+          edge.id = edgeId;
+          edge.type = type;
+          edge.startNode = startNode;
+          edge.endNode = endNode;
+          edges.push(edge);
+
+          edgeId++;
+        }
+
+
+        // for(var i=0;i<nodes.length;i++){
+        //   var node = nodes[i];
+        //   var nodeId = node.id;
+        //   var children = node.children;
+
+        //   for(var j=0;j<children.length;j++){
+        //     var child = children[j];
+
+        //     var edge = {};
+        //     edge.id = edgeId;
+        //     edge.type = edgeType[edgeId];
+        //     edge.startNode = nodeId;
+        //     edge.endNode = child;
+        //     edges.push(edge);
+
+        //     edgeId++;
+        //   }
+          
+        // }
+
+        var exportObj = {
+          nodes: nodes,
+          edges: edges
+        }
+
+        // pretty print node data
+        var exportValue = JSON.stringify(exportObj, undefined, 2);
+
+        var fileName = "onto.json";
+        const newBlob = new Blob([exportValue], { type: "application/json" });
+        download(latestOnto, newBlob);
+
+        var sendNodes = nodes.map(item => {
+          if(typeof item.properties_filter === "undefined"){
+            return {
+              id: item.id,
+              labels: item.labels,
+            }
+          }
+          else{
+            return {
+              id: item.id,
+              labels: item.labels,
+              properties_filter: item.properties_filter
+            }
+          }
+        });
+        var sendEdges = edges.map(item => {
+          return {
+            id: item.id.toString(),
+            type: item.type,
+            startNode: item.startNode.toString(),
+            endNode: item.endNode.toString()
+          }
+        })
+        var graph = {
+          nodes: sendNodes,
+          relationships: sendEdges
+        }
+        var sendObj = {
+          graph: graph
+        }
+
+        console.log("sended:");
+        console.log(sendObj);
+
+      }
+
+      const html = (strings, ...values) => String.raw({ raw: strings }, ...values);
+      // Some formatters will format this literal's content as HTML
+      // const doc = html`<canvas>\n</canvas>`;
+      // "<canvas>\n</canvas>"; the "\n" becomes a line break
+
+
+      function objectToArray(obj) {
+        return Object.keys(obj).map(function (key) {
+          obj[key].id = key;
+          obj[key].labels = nodeLabels[key];
+          var propertyFilter = propFilter[key];
+          if(propertyFilter !== "optional"){
+            var propertyFilterArr = propertyFilter.split(',');
+            var items = propertyFilterArr.map(item => {
+              var tempObj = {};
+              tempObj["type"] = String.raw`{var}.type=\'${item}\'`;
+              // tempObj["type"] = "{var}.type=\\" + "'" + item + "\\" + "'";
+              return tempObj;
+            });
+            obj[key].properties_filter = items;
+          }
+          return obj[key];
+        });
+      }
+
+      function addConnections(elem, index) {
+        // need to replace this with a tree of the network, then get child direct children of the element
+        elem.children = network.getConnectedNodes(index, 'to');
+      }
+
+
+      async function importNetwork() {
+
+        // var inputValue = exportArea.value;
+
+        var inputData = await (await fetch('http://localhost:5000/upload/onto.json')).json();
+
+        // var inputData = JSON.parse(inputValue);
+
+        var data = {
+          nodes: getNodeData(inputData),
+          edges: getEdgeData(inputData),
+        };
+
+        var container = document.getElementById("mynetwork");
+
+        network = new vis.Network(container, data, {});
+
+      }
+
+      function getNodeData(data) {
+        var networkNodes = [];
+
+        data.forEach(function (elem, index, array) {
+          networkNodes.push({
+            id: elem.id,
+            label: elem.id,
+            x: elem.x,
+            y: elem.y,
+          });
+        });
+
+        return new vis.DataSet(networkNodes);
+      }
+
+      function getNodeById(data, id) {
+        for (var n = 0; n < data.length; n++) {
+          if (data[n].id == id) {
+            // double equals since id can be numeric or string
+            return data[n];
+          }
+        }
+
+        throw "Can not find id '" + id + "' in data";
+      }
+
+      function getEdgeData(data) {
+        var networkEdges = [];
+
+        data.forEach(function (node) {
+          // add the connection
+          node.connections.forEach(function (connId, cIndex, conns) {
+            networkEdges.push({ from: node.id, to: connId });
+            let cNode = getNodeById(data, connId);
+
+            var elementConnections = cNode.connections;
+
+            // remove the connection from the other node to prevent duplicate connections
+            var duplicateIndex = elementConnections.findIndex(function (
+              connection
+            ) {
+              return connection == node.id; // double equals since id can be numeric or string
+            });
+
+            if (duplicateIndex != -1) {
+              elementConnections.splice(duplicateIndex, 1);
+            }
+          });
+        });
+
+        return new vis.DataSet(networkEdges);
+      }
+
+      function saveNetwork(){
+        
+        var nodes = objectToArray(network.getPositions());
+
+        console.log(nodes);
+        console.log(typeof nodes);
+
+        if(nodes.length === 0){
+          alert("本体数据为空！");
+          return;
+        }
+
+        var edges = [];
+        var edgeId = nodeId;
+
+        for(var i=0;i<edgeIdArray.length;i++){
+          var edge = {};
+
+          var edgeIdStr = edgeIdArray[i];
+          var type = edgeType[edgeIdStr];
+
+          var startAndEnd = network.getConnectedNodes(edgeIdStr);
+          console.log(edgeIdStr);
+          console.log(startAndEnd);
+          var startNode = startAndEnd[0];
+          var endNode = startAndEnd[1];
+
+          edge.id = edgeId.toString();
+          edge.type = type;
+          edge.startNode = startNode.toString();
+          edge.endNode = endNode.toString();
+          edges.push(edge);
+
+          edgeId++;
+        }
+
+
+        // for(var i=0;i<nodes.length;i++){
+        //   var node = nodes[i];
+        //   var nodeId = node.id;
+        //   var children = node.children;
+
+        //   for(var j=0;j<children.length;j++){
+        //     var child = children[j];
+
+        //     var edge = {};
+        //     edge.id = edgeId;
+        //     edge.type = edgeType[edgeId];
+        //     edge.startNode = nodeId;
+        //     edge.endNode = child;
+        //     edges.push(edge);
+
+        //     edgeId++;
+        //   }
+          
+        // }
+
+        var graph = {
+          nodes: nodes,
+          relationships: edges
+        }
+
+        var ontologyJson = JSON.stringify(graph);
+
+        // var sendObj = {
+        //   graph: graph
+        // }
+
+        var finalSendData = {
+          sendOntoName: latestOnto,
+          sendObj: graph
+        }
+
+        console.log(latestOnto);
+        console.log(ontologyJson);
+
+        fetch('/ontosave/', {
+          method: 'post',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(finalSendData)
+        })
+        .then(res => res.json())
+        .then(data => {
+          
+          console.log(data);
+
+          var firstOrNot = "";
+
+          //第一次添加的本体，直接保存
+          if(firstOrNot === "yes"){
+
+            fetch('http://localhost:8081/ontology/save', {
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                "name": latestOnto,
+                "ontologyJson": ontologyJson
+              })
+            })
+            .then(res => {
+              console.log("ontology saved");
+
+              layui.use('layer', function(){
+                var layer = layui.layer;
+                layer.msg('本体数据已保存！');
+              })
+
+            })
+
+          }
+          else{  //已存在的本体，则需要进行更新操作
+
+            fetch('http://localhost:8081/ontology/updateOntology', {
+              method: 'post',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                "name": latestOnto,
+                "ontologyJson": ontologyJson
+              })
+            })
+            .then(res => {
+              console.log("ontology saved");
+
+              layui.use('layer', function(){
+                var layer = layui.layer;
+                layer.msg('本体数据已保存！');
+              })
+
+            })
+
+          }
+
+
+        })
+
+      }
+
+
+
+    </script>
+  </head>
+
+  <body onload="init();">
+    
+    
+
+    <div id="node-popUp">
+      <span id="node-operation">node</span> <br />
+      <table style="margin: auto">
+        <!-- <tr>
+          <td>id</td>
+          <td><input id="node-id" value="new value" /></td>
+        </tr> -->
+        <tr>
+          <td>label</td>
+          <td><input id="node-label" value="new value" /></td>
+        </tr>
+        <tr>
+          <td>properties_filter</td>
+          <td><input id="node-prop" value="optional" /></td>
+        </tr>
+        <!-- <tr>
+          <td>shape</td>
+          <td><input id="node-shape" value="ellipse" /></td>
+        </tr> -->
+      </table>
+      <input type="button" value="save" id="node-saveButton" />
+      <input type="button" value="cancel" id="node-cancelButton" />
+    </div>
+
+    <div id="edge-popUp">
+      <span id="edge-operation">edge</span> <br />
+      <table style="margin: auto">
+        <!-- <tr>
+          <td>label</td>
+          <td><input id="edge-label" value="new value" /></td>
+        </tr> -->
+        <!-- <tr>
+          <td>type</td>
+          <td><input id="edge-type" value="new value" /></td>
+        </tr> -->
+        <tr>
+          <td>type</td>
+          <td>
+            <select name="" id="edge-type">
+              <option value="ADJACENT">ADJACENT</option>
+              <option value="BELONG">BELONG</option>
+              <option value="ATSAMETIME">ATSAMETIME</option>
+            </select>
+          </td>
+        </tr>
+        <!-- <tr>
+          <td>color</td>
+          <td><input id="edge-color" value="#5394ed" /></td>
+        </tr> -->
+        <!-- <tr>
+          <td>arrows</td>
+          <td><input id="edge-arrow" value="to" /></td>
+        </tr> -->
+        <!-- <tr>
+          <td>length</td>
+          <td><input id="edge-length" value="150" /></td>
+        </tr> -->
+      </table>
+      <input type="button" value="save" id="edge-saveButton" />
+      <input type="button" value="cancel" id="edge-cancelButton" />
+    </div>
+
+    <!-- <br /> -->
+    <!-- <div id="export" onclick="test()" style="width: 30px;height: 28px;background-image: url(./pics/export.jpg);display: block;background-size: contain;"></div> -->
+    <a id="export" type="button" onclick="exportNetwork()" style="width: 30px;height: 28px;background-image: url(./pics/export.png);display: block;background-size: contain;"></a>
+    <a id="save" type="button" onclick="saveNetwork()" style="width: 30px;height: 28px;background-image: url(./pics/save.png);display: block;background-size: contain;"></a>
+    <div id="mynetwork"></div>
+  </body>
+</html>

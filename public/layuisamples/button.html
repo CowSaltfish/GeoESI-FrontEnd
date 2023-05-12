@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>按钮</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    <!-- 按钮
+            向任意HTML元素设定“class='layui-button'”，建立一个基础按钮
+            通过追加格式为“layui-btn-{type}”的class来定义其它按钮风格
+    -->
+
+    <!-- 基础按钮 -->
+    <h3>基础按钮</h3>
+    <button type="button" class="layui-btn">一个标准的按钮</button>
+    <a href="http://www.baidu.com" class="layui-btn">一个可跳转的按钮</a>
+    <div class="layui-btn">一个按钮</div>
+
+    <hr>
+    <h3>不同主题的按钮</h3>
+    <button class="layui-btn">默认按钮</button>
+    <button class="layui-btn layui-btn-primary">原始按钮</button>
+    <button class="layui-btn layui-btn-normal">百搭按钮</button>
+    <button class="layui-btn layui-btn-warm">暖色按钮</button>
+    <button class="layui-btn layui-btn-danger">警告按钮</button>
+    <button class="layui-btn layui-btn-disabled">禁用按钮</button>
+
+    <!-- 不同尺寸的按钮 -->
+    <hr>
+    <h3>不同尺寸的按钮</h3>
+    <button class="layui-btn">默认</button>
+    <button class="layui-btn layui-btn-primary layui-btn-lg">原始主题、大型</button>
+    <button class="layui-btn layui-btn-danger layui-btn-sm">警告主题、小型</button>
+    <button class="layui-btn layui-btn-xs">迷你</button>
+
+    <!-- 圆角 -->
+    <hr>
+    <h3>圆角</h3>
+    <button class="layui-btn layui-btn-radius">默认按钮</button>
+    <button class="layui-btn layui-btn-primary layui-btn-radius">原始按钮</button>
+    <button class="layui-btn layui-btn-normal layui-btn-radius">百搭按钮</button>
+    <button class="layui-btn layui-btn-warm layui-btn-radius">暖色按钮</button>
+    <button class="layui-btn layui-btn-danger layui-btn-radius">警告按钮</button>
+    <button class="layui-btn layui-btn-disabled layui-btn-radius">禁用按钮</button>
+
+    <hr>
+    <h3>图标</h3>
+    <button type="button" class="layui-btn">
+        <i class="layui-icon layui-icon-add-circle"></i>添加
+    </button>
+    <button type="button" class="layui-btn layui-btn-warm">
+        <i class="layui-icon layui-icon-heart"></i>关注
+    </button>
+
+</body>
+</html>

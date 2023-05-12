@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>导航</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    <!-- 导航
+            水平导航 .layui-nav
+                .layui-nav-item 表示导航中的项
+                .layui-this 表示当前被选中的项
+                .layui-nav-child 表示二级菜单
+            垂直导航 .layui-nav .layui-nav-tree
+            侧边导航 .layui-nav .layui-nav-tree .layui-nav-side
+                导航的主题颜色
+                    layui-bg-颜色
+                        墨绿
+                        藏青cyan
+            面包屑导航 .layui-breadcrumb
+                通过lay-separator="符号"设置面包屑导航的分隔符
+    -->
+
+    <!-- 水平导航 .layui-nav -->
+    <!-- <ul class="layui-nav">
+        <li class="layui-nav-item"><a href="">最新活动</a></li>
+        <li class="layui-nav-item"><a href="">产品</a></li>
+        <li class="layui-nav-item layui-this"><a href="">大数据</a></li>
+        <li class="layui-nav-item">
+            <a href="">解决方案</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">移动模块</a></dd>
+                <dd><a href="">后台模块</a></dd>
+                <dd><a href="">电商平台</a></dd>
+            </dl>
+        </li>
+    </ul> -->
+
+    <!-- 垂直导航 .layui-nav .layui-nav-tree -->
+    <!-- <ul class="layui-nav layui-nav-tree">
+        <li class="layui-nav-item"><a href="">最新活动</a></li>
+        <li class="layui-nav-item"><a href="">产品</a></li>
+        <li class="layui-nav-item layui-this"><a href="">大数据</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">解决方案</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">移动模块</a></dd>
+                <dd><a href="">后台模块</a></dd>
+                <dd><a href="">电商平台</a></dd>
+            </dl>
+        </li>
+    </ul> -->
+
+    <!-- 侧边导航 .layui-nav .layui-nav-tree .layui-nav-side -->
+    <!-- <ul class="layui-nav layui-nav-tree layui-nav-side">
+        <li class="layui-nav-item"><a href="">最新活动</a></li>
+        <li class="layui-nav-item"><a href="">产品</a></li>
+        <li class="layui-nav-item layui-this"><a href="">大数据</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">解决方案</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">移动模块</a></dd>
+                <dd><a href="">后台模块</a></dd>
+                <dd><a href="">电商平台</a></dd>
+            </dl>
+        </li>
+    </ul> -->
+
+    <!-- 设置导航的主题颜色 -->
+    <!-- <ul class="layui-nav layui-nav-tree layui-nav-side layui-bg-cyan">
+        <li class="layui-nav-item"><a href="">最新活动<span class="layui-badge-dot"></span></a></li>
+        <li class="layui-nav-item"><a href="">产品<span class="layui-badge">9</span></a></li>
+        <li class="layui-nav-item layui-this"><a href="">大数据</a></li>
+        <li class="layui-nav-item">
+            <a href="javascript:;">解决方案</a>
+            <dl class="layui-nav-child">
+                <dd><a href="">移动模块</a></dd>
+                <dd><a href="">后台模块</a></dd>
+                <dd><a href="">电商平台</a></dd>
+            </dl>
+        </li>
+    </ul> -->
+
+    <!-- 面包屑导航 -->
+    <span class="layui-breadcrumb">
+        <a href="">首页</a>
+        <a href="">国际新闻</a>
+        <a href="">亚太地区</a>
+        <a href=""><cite>正文</cite></a>
+    </span>
+    <hr>
+    <span class="layui-breadcrumb" lay-separator="-">
+        <a href="">首页</a>
+        <a href="">国际新闻</a>
+        <a href="">亚太地区</a>
+        <a href=""><cite>正文</cite></a>
+    </span>
+    <hr>
+    <span class="layui-breadcrumb" lay-separator="|">
+        <a href="">首页</a>
+        <a href="">国际新闻</a>
+        <a href="">亚太地区</a>
+        <a href=""><cite>正文</cite></a>
+    </span>
+
+    <script>
+        // 导航依赖element模块，否则无法进行功能性操作
+        layui.use('element', function(){
+            var element = layui.element;
+        });
+    </script>
+</body>
+</html>

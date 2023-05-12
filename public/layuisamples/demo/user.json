@@ -1,0 +1,33 @@
+{
+    "code":0,
+    "msg":"",
+    "count":4,
+    "data":[{
+        "id":10000,
+        "username":"user-0",
+        "sex":"女",
+        "city":"城市-0",
+        "sign":"签名-0"
+    },
+    {
+        "id":10001,
+        "username":"user-1",
+        "sex":"男",
+        "city":"城市-1",
+        "sign":"签名-1"
+    },
+    {
+        "id":10002,
+        "username":"user-2",
+        "sex":"女",
+        "city":"城市-2",
+        "sign":"签名-2"
+    },
+    {
+        "id":10003,
+        "username":"user-3",
+        "sex":"女",
+        "city":"城市-3",
+        "sign":"签名-3"
+    }]
+}

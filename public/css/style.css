@@ -1,0 +1,50 @@
+.show {
+    display: block;
+}
+
+.none {
+    display: none;
+}
+
+.switch {
+    font-size: medium;
+}
+
+.switch:hover {
+    cursor: pointer;
+}
+
+#openFile:hover {
+    cursor: pointer;
+}
+
+/* .layui-form-label {
+    width: 200px;
+} */
+
+.table{
+    width: 500px;
+    margin: 0 auto;
+    text-align: center;
+    border: 1px solid #333333;
+    /*合并表格边框属性*/
+    border-collapse: collapse;
+}
+/* td,th{
+    height: 40px;
+    border: 1px solid #333333;
+} */
+.table td{
+    height: 40px;
+    border: 1px solid #333333;
+}
+.table th{
+    height: 40px;
+    border: 1px solid #333333;
+}
+
+.g6-component-tooltip {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 0px 10px 24px 10px;
+    box-shadow: rgb(174, 174, 174) 0px 0px 10px;
+}

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据表格</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    <!-- 准备容器，设置id属性 -->
+    <table id="demo" lay-filter="test"></table>
+
+    <!-- 表格工具栏 -->
+    <script type="text/html" id="toolbarDemo">
+        <div class="layui-btn-container">
+            <!-- 给元素绑定事件名 -->
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckData">
+                获取选中行数据
+            </button>
+            <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">
+                获取选中数目
+            </button>
+            <button class="layui-btn layui-btn-sm" lay-event="isAll">
+                验证是否全选
+            </button>
+        </div>
+    </script>
+
+    <!-- 表头工具栏 -->
+    <script type="text/html" id="barDemo">
+        <a href="" class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a href="" class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script>
+        layui.use(['table', 'layer'], function(){
+            var table = layui.table;
+            var layer = layui.layer;
+
+            //第一个实例
+        table.render({
+            elem: '#demo'  //elem属性用来绑定容器的id
+            ,height: 312
+            ,url: './demo/user.json' //数据接口
+            ,page: true //开启分页
+            ,cols: [[ //表头
+            //设置序列号
+            {field: 'aa', title: '序号', type:"numbers"}
+            //设置复选框列
+            ,{field: 'bb', title: '复选框', type:"checkbox"}
+            ,{field: 'id', title: 'ID', sort: true}
+            //设置 hide: true 可以隐藏列
+            ,{field: 'username', title: '用户名', hide: true}
+            ,{field: 'sex', title: '性别', sort: true}
+            ,{field: 'city', title: '城市'} 
+            ,{field: 'sign', title: '签名'},
+            //设置表头工具栏
+            {field: '操作', title:'操作' ,toolbar: '#barDemo'}
+            ]],
+            toolbar:"#toolbarDemo"
+        });
+
+        // 头监听事件
+        //     语法（下面的demo是容器的lay-filter的属性值）：
+        //         table.on('toolbar(demo)', function(obj){
+
+        //         });
+        table.on('toolbar(test)', function(obj){
+            // console.log(obj);
+            //obj.config对象中可以获取id属性值，即表示当前容器的id属性值，也就是demo
+            //获取当前表格被选中记录对象，返回
+            var checkStatus = table.checkStatus(obj.config.id);
+            console.log(checkStatus);
+            //获取事件名
+            var eventName = obj.event;
+            //根据不同的事件执行不同的操作
+            switch(eventName){
+                case 'getCheckData':
+                    //获取被选中的记录的数组
+                    var arr = checkStatus.data;
+                    //将数组解析成字符串
+                    layer.alert(JSON.stringify(arr));
+                    break;
+                case 'getCheckLength':
+                    //获取被选中的记录的数组
+                    var length = checkStatus.data.length;
+                    layer.alert("选中了" + length + "条记录");
+                    break;
+                case 'isAll':
+                    //通过isAll属性判断是否全选
+                    var flag = checkStatus.isAll;
+                    var str = flag?"已全部选中":"未全部选中";
+                    layer.alert(str);
+                    break;
+                default:
+                    break;
+            }
+        });
+
+        });
+    </script>
+</body>
+</html>

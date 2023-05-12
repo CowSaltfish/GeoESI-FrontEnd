@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>表格</title>
+    <link rel="stylesheet" href="../src/layui/css/layui.css">
+    <script src="../src/layui/layui.js"></script>
+</head>
+<body>
+    <!-- 表格 .layui-table
+            常用属性
+                lay-even 若设置了该属性，则可以实现隔行换色的效果
+                lay-skin 设置边框风格 
+                    行边框lay-skin="line" 
+                    列边框lay-skin="line"
+                    无边框lay-skin="nob"
+                lay-size 设置表格尺寸
+                    sm小尺寸
+                    lg大尺寸
+
+    -->
+
+    <table class="layui-table">
+        <colgroup>
+          <col width="150">
+          <col width="200">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>昵称</th>
+            <th>加入时间</th>
+            <th>签名</th>
+          </tr> 
+        </thead>
+        <tbody>
+          <tr>
+            <td>贤心</td>
+            <td>2016-11-29</td>
+            <td>人生就像是一场修行</td>
+          </tr>
+          <tr>
+            <td>许闲心</td>
+            <td>2016-11-28</td>
+            <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+          </tr>
+        </tbody>
+    </table>
+
+    <hr>
+    <h3>隔行换色</h3>
+    <table class="layui-table" lay-even lay-skin="nob" lay-size="lg">
+        <colgroup>
+          <col width="150">
+          <col width="200">
+          <col>
+        </colgroup>
+        <thead>
+          <tr>
+            <th>昵称</th>
+            <th>加入时间</th>
+            <th>签名</th>
+          </tr> 
+        </thead>
+        <tbody>
+          <tr>
+            <td>贤心</td>
+            <td>2016-11-29</td>
+            <td>人生就像是一场修行</td>
+          </tr>
+          <tr>
+            <td>许闲心</td>
+            <td>2016-11-28</td>
+            <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+          </tr>
+          <tr>
+            <td>贤心</td>
+            <td>2016-11-29</td>
+            <td>人生就像是一场修行</td>
+          </tr>
+          <tr>
+            <td>许闲心</td>
+            <td>2016-11-28</td>
+            <td>于千万人之中遇见你所遇见的人，于千万年之中，时间的无涯的荒野里…</td>
+          </tr>
+        </tbody>
+    </table>
+    
+</body>
+</html>
