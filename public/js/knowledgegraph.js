@@ -125,13 +125,20 @@ async function KGDemo(){
     var selectedlegendpos = $('#selectlegendpos').val();
 
 
+    //new
+    //新窗口配置
+    var selectedKGDataSource = $('#KGDataSource').val();
+    var selectedGeoBoundDS = $('#GeoBoundDS').val();
+    var enteredKGName = $('#EnteredKGName').val();
+
     //展示本地数据
     // var test_string = '实例知识图谱展示Demo';
     // var data = await (await fetch('/test/' + test_string)).json();
 
 
-    var tempShpPath = shpPathObj[selectedDataSource];
-    var tempBoundaryShpPath = boundaryShpPathObj[selectedDataSource];
+    var tempShpPath = shpPathObj[selectedKGDataSource];
+    // var tempBoundaryShpPath = boundaryShpPathObj[selectedGeoBoundDS];
+    var tempBoundaryShpPath = shpPathObj[selectedGeoBoundDS];
 
     
 
@@ -144,27 +151,27 @@ async function KGDemo(){
         // //请求图谱数据
         // var rawdata = await (await fetch('http://localhost:8081/kg/searchAllKG')).json();
 
-        var rawdata = await (await fetch('http://localhost:5000/upload/testtwo.json')).json();
+        // //画图用样本数据
+        // var rawdata = await (await fetch('http://localhost:5000/upload/testtwo.json')).json();
+        // console.log(rawdata);
 
-        console.log(rawdata);
-
-        // var tempUrl = "http://localhost:8081/kg/create";
-        // var temprawdata = await (await fetch(tempUrl, {
-        //     method: 'post',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         facePath: tempShpPath,
-        //         boundaryPath: tempBoundaryShpPath
-        //     })
-        // })).json();
-        // console.log(temprawdata);
+        var tempUrl = "http://localhost:8081/kg/create";
+        var temprawdata = await (await fetch(tempUrl, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                facePath: tempShpPath,
+                boundaryPath: tempBoundaryShpPath
+            })
+        })).json();
+        console.log(temprawdata);
 
         layer.close(index);
         
         //解析图谱数据
-        var data = parseRawData(rawdata);
+        var data = parseRawData(temprawdata);
 
         //使用本地数据
         // var data = await getAndParseKGData();
@@ -316,7 +323,7 @@ async function KGDemo(){
             data: legendData,
             align: 'center',
             layout: 'horizontal', // vertical
-            position: selectedlegendpos,
+            position: 'right-bottom',
             vertiSep: 18,
             horiSep: 24,
             offsetY: -24,
@@ -461,26 +468,26 @@ async function KGDemo(){
             //   type: 'radial',
             //   unitRadius: 50
             // },
-            // layout: {
-            //     type: selectedlayout,
-            //     linkDistance: 200,
-            //     nodeSize: 42,
-            //     // nodeStrength: 1,
-            //     preventOverlap: true,
-            //     nodeSpacing: 20,
-            //     // workerEnabled: true
-            //     // maxIteration: 1000,
-            //     // type: 'fruchterman',
-            //     // gravity: 5,
-            //     // speed: 5,
-            //     // // for rendering after each iteration
-            //     // // tick: () => {
-            //     // //     graph.refreshPositions()
-            //     // // }
-            // },
+            layout: {
+                type: 'force',
+                linkDistance: 500,
+                nodeSize: 32,
+                // nodeStrength: 1,
+                preventOverlap: true,
+                nodeSpacing: 50,
+                // workerEnabled: true
+                // maxIteration: 1000,
+                // type: 'fruchterman',
+                // gravity: 5,
+                // speed: 5,
+                // // for rendering after each iteration
+                // // tick: () => {
+                // //     graph.refreshPositions()
+                // // }
+            },
             // animate: true,
             defaultNode: {
-                size: 50,
+                size: 32,
                 color: 'steelblue',
                 style: {
                     lineWidth: 2,
@@ -502,11 +509,12 @@ async function KGDemo(){
                     //   path: 'M 4,0 L -4,-4 L -4,4 Z',
                     //   d: 4
                     // }
-                    endArrow: {
-                        path: G6.Arrow.triangle(8, 8, 21),
-                        d: 21,
-                        fill: "#999"
-                    }
+                    // endArrow: {
+                    //     path: G6.Arrow.triangle(8, 8, 21),
+                    //     d: 21,
+                    //     fill: "#999"
+                    // }
+                    endArrow: true
                 },
                 labelCfg: {
                     refY: 7,
@@ -667,14 +675,14 @@ async function KGDemo(){
         graph.data(data);
         graph.render();
 
-        // graph.on('node:dragstart', function(e) {
+        graph.on('node:dragstart', function(e) {
             
-        //     // const forceLayout = graph.get('layoutController').layoutMethods[0];
-        //     // forceLayout.stop();
+            // const forceLayout = graph.get('layoutController').layoutMethods[0];
+            // forceLayout.stop();
 
-        //     graph.layout();
-        //     refreshDragedNodePosition(e);
-        // });
+            graph.layout();
+            refreshDragedNodePosition(e);
+        });
         graph.on('node:drag', function(e) {
             refreshDragedNodePosition(e);
         });
@@ -699,7 +707,7 @@ async function KGDemo(){
         graphArray.push(graph);
 
         //在左侧面板的知识图谱列表中添加刚刚新建的图谱
-        $('<dd><a id="' + graphIndex.toString() + '"' + ' href="javascript:;" >'+ KGName +'</a></dd>').appendTo('#graphList');
+        $('<dd><a id="' + graphIndex.toString() + '"' + ' href="javascript:;" >'+ enteredKGName +'</a></dd>').appendTo('#graphList');
 
         //重新渲染左侧导航栏
         layui.use('element', function(){
@@ -1406,6 +1414,268 @@ function customizeSettings(){
     })
 }
 
+// //解析原始数据
+// function parseRawData(rawdata){
+
+//     var rawnodes = rawdata.nodes;
+//     var rawedges = rawdata.relationships;
+
+//     console.log(rawnodes[0].id);
+//     console.log(typeof(rawnodes[0].id));
+
+//     var maxX = -10000;
+//     var maxY = -10000;
+//     var minX = 10000;
+//     var minY = 10000;
+
+
+//     rawnodes.forEach(node => {
+
+//         if(node.labelName == 'Face'){
+
+//             var tempx = node.position[0];
+//             var tempy = node.position[1];
+
+//             if( tempx > maxX ){
+//                 maxX = tempx;
+//             }
+//             if( tempy > maxY ){
+//                 maxY = tempy;
+//             }
+//             if( tempx < minX ){
+//                 minX = tempx;
+//             }
+//             if( tempy < minY ){
+//                 minY = tempy;
+//             }
+
+//         }
+
+//     })
+
+//     var MBR_length = maxX - minX;
+//     var MBR_height = maxY - minY;
+
+
+//     console.log(maxX);
+//     console.log(maxY);
+//     console.log(minX);
+//     console.log(minY);
+
+//     var xRatio = MBR_length/window.innerWidth;
+//     var yRatio = MBR_height/window.innerHeight;
+
+//     console.log("确定缩放比例：");
+//     console.log(xRatio);
+//     console.log(yRatio);
+
+//     // 缩放比例
+//     var zoomRatio = 0;
+
+//     if(xRatio > yRatio){
+//         zoomRatio = xRatio;
+//     }
+//     else{
+//         zoomRatio = yRatio;
+//     }
+
+//     console.log(zoomRatio);
+
+//     var originX = minX;
+//     var originY = minY;
+
+
+
+
+
+
+//     var unCompleteNodes = rawnodes.map(item => {
+
+//         var nodeX = item.position[0];
+//         var nodeY = item.position[1];
+
+//         var xDiff = (nodeX - originX)/zoomRatio;
+//         var yDiff = (nodeY - originY)/zoomRatio;
+
+//         var xPos = Math.round(xDiff);
+//         var yPos = window.innerHeight - Math.round(yDiff);
+        
+
+//         return {
+//             id: item.id.toString(),
+//             x:xPos,
+//             y:yPos,
+//             label: item.nodeName,
+//             labelName:item.labelName,
+//             properties: item
+//         }
+//     });
+
+//     var nodesBackup = unCompleteNodes;
+
+//     var nodes = unCompleteNodes.map( item => {
+
+//         var labelName = item.labelName;
+
+//         if(labelName == "Face" || labelName == "Boundary"){
+//             return item;
+//         }
+
+//         if(labelName == "GeoEvent"){
+            
+//             var label = item.label;
+//             var connectedNodes = [];
+
+//             unCompleteNodes.forEach(node => {
+
+//                 if( (node.label == item.label) && node.labelName !== "GeoEvent" ){
+//                     connectedNodes.push(node);
+//                 }
+
+//             });
+
+//             if(connectedNodes.length <= 1){
+//                 return {
+//                     id: item.id,
+//                     x: connectedNodes[0].x+50,
+//                     y: connectedNodes[0].y-50,
+//                     label: item.label,
+//                     labelName: item.labelName,
+//                     properties: item.properties
+//                 }
+//             }
+//             else{
+//                 var averageX = 0;
+//                 var averageY = 0;
+
+//                 var sumX = 0;
+//                 var sumY = 0;
+
+//                 connectedNodes.forEach(node => {
+
+//                     sumX += node.x;
+//                     sumY += node.y;
+
+//                 })
+
+//                 averageX = Math.round(sumX/connectedNodes.length);
+//                 averageY = Math.round(sumY/connectedNodes.length);
+
+//                 return {
+//                     id: item.id,
+//                     x: averageX,
+//                     y: averageY,
+//                     label: item.label,
+//                     labelName: item.labelName,
+//                     properties: item.properties
+//                 }
+
+//             }
+
+
+//         }
+
+
+//     } )
+
+//     // var tempNum = 1000;
+
+//     var edges = rawedges.map(item => {
+//       return {
+//         // id: item.id.toString(),
+//         source: item.startNode.toString(),
+//         target: item.endNode.toString(),
+//         label: item.relationName,
+//         properties: item
+//       }
+//     });
+//     console.log(edges.length);
+
+//     // var edges = rawedges.map(item => {
+//     //     tempNum++;
+//     //     return {
+//     //       id: tempNum.toString(),
+//     //       source: item.startNode.toString(),
+//     //       target: item.endNode.toString(),
+//     //       label: item.type,
+//     //       properties: item
+//     //     }
+//     //   });
+//     // console.log(edges.length);
+
+
+//     function checkNode(node){
+//       return node.labelName !== 'Boundary' && node.labelName !== "GeoEvent" ;
+//     }
+    
+//     //非地质界线节点
+//     var finalNodes = nodes.filter(checkNode);
+//     console.log("节点数：");
+//     console.log(finalNodes.length);
+
+//     //非地质界线节点Id集合
+//     var nodeIds = finalNodes.map(item => {
+//       return item.id;
+//     })
+
+//     console.log(nodeIds.length);
+
+//     function checkEdge(edge){
+//       return ((nodeIds.indexOf(edge.source) != -1) && (nodeIds.indexOf(edge.target) != -1));
+//     }
+
+    
+
+
+
+//     //与地质界线节点无关的节点
+//     var finalEdges = edges.filter(checkEdge);
+//     console.log("边数：");
+//     console.log(finalEdges.length);
+
+
+//     //只保留单向边
+//     var edgePtPairs = [];
+
+//     var newEdges = [];
+
+//     for(var i=0;i<finalEdges.length;i++){
+
+//         var source = finalEdges[i].source;
+//         var target = finalEdges[i].target;
+
+//         var newEdgePair = [];
+
+//         var newOrNot = true;
+
+//         edgePtPairs.forEach(edgePair => {
+
+//             if(edgePair.indexOf(source) !== -1 && edgePair.indexOf(target) !== -1){
+
+//                 newOrNot = false;
+
+//             }
+//         })
+
+//         if(newOrNot){
+//             newEdgePair.push(source);
+//             newEdgePair.push(target);
+//             edgePtPairs.push(newEdgePair);
+//             newEdges.push(finalEdges[i]);
+//         }
+
+//     }
+
+
+
+//     var finalData = {
+//       nodes: finalNodes,
+//       edges: newEdges
+//     }
+
+//     return finalData;
+// }
+
 //解析原始数据
 function parseRawData(rawdata){
 
@@ -1415,185 +1685,195 @@ function parseRawData(rawdata){
     console.log(rawnodes[0].id);
     console.log(typeof(rawnodes[0].id));
 
-    var maxX = -10000;
-    var maxY = -10000;
-    var minX = 10000;
-    var minY = 10000;
+    // var maxX = -10000;
+    // var maxY = -10000;
+    // var minX = 10000;
+    // var minY = 10000;
 
 
-    rawnodes.forEach(node => {
+    // rawnodes.forEach(node => {
 
-        if(node.labelName == 'Face'){
+    //     if(node.labelName == 'Face'){
 
-            var tempx = node.position[0];
-            var tempy = node.position[1];
+    //         var tempx = node.position[0];
+    //         var tempy = node.position[1];
 
-            if( tempx > maxX ){
-                maxX = tempx;
-            }
-            if( tempy > maxY ){
-                maxY = tempy;
-            }
-            if( tempx < minX ){
-                minX = tempx;
-            }
-            if( tempy < minY ){
-                minY = tempy;
-            }
+    //         if( tempx > maxX ){
+    //             maxX = tempx;
+    //         }
+    //         if( tempy > maxY ){
+    //             maxY = tempy;
+    //         }
+    //         if( tempx < minX ){
+    //             minX = tempx;
+    //         }
+    //         if( tempy < minY ){
+    //             minY = tempy;
+    //         }
 
-        }
+    //     }
 
-    })
+    // })
 
-    var MBR_length = maxX - minX;
-    var MBR_height = maxY - minY;
-
-
-    console.log(maxX);
-    console.log(maxY);
-    console.log(minX);
-    console.log(minY);
-
-    var xRatio = MBR_length/window.innerWidth;
-    var yRatio = MBR_height/window.innerHeight;
-
-    console.log("确定缩放比例：");
-    console.log(xRatio);
-    console.log(yRatio);
-
-    // 缩放比例
-    var zoomRatio = 0;
-
-    if(xRatio > yRatio){
-        zoomRatio = xRatio;
-    }
-    else{
-        zoomRatio = yRatio;
-    }
-
-    console.log(zoomRatio);
-
-    var originX = minX;
-    var originY = minY;
+    // var MBR_length = maxX - minX;
+    // var MBR_height = maxY - minY;
 
 
+    // console.log(maxX);
+    // console.log(maxY);
+    // console.log(minX);
+    // console.log(minY);
 
+    // var xRatio = MBR_length/window.innerWidth;
+    // var yRatio = MBR_height/window.innerHeight;
+
+    // console.log("确定缩放比例：");
+    // console.log(xRatio);
+    // console.log(yRatio);
+
+    // // 缩放比例
+    // var zoomRatio = 0;
+
+    // if(xRatio > yRatio){
+    //     zoomRatio = xRatio;
+    // }
+    // else{
+    //     zoomRatio = yRatio;
+    // }
+
+    // console.log(zoomRatio);
+
+    // var originX = minX;
+    // var originY = minY;
 
 
 
-    var unCompleteNodes = rawnodes.map(item => {
 
-        var nodeX = item.position[0];
-        var nodeY = item.position[1];
 
-        var xDiff = (nodeX - originX)/zoomRatio;
-        var yDiff = (nodeY - originY)/zoomRatio;
 
-        var xPos = Math.round(xDiff);
-        var yPos = window.innerHeight - Math.round(yDiff);
+    // var unCompleteNodes = rawnodes.map(item => {
+
+    //     var nodeX = item.position[0];
+    //     var nodeY = item.position[1];
+
+    //     var xDiff = (nodeX - originX)/zoomRatio;
+    //     var yDiff = (nodeY - originY)/zoomRatio;
+
+    //     var xPos = Math.round(xDiff);
+    //     var yPos = window.innerHeight - Math.round(yDiff);
         
 
+    //     return {
+    //         id: item.id.toString(),
+    //         x:xPos,
+    //         y:yPos,
+    //         label: item.nodeName,
+    //         labelName:item.labelName,
+    //         properties: item
+    //     }
+    // });
+
+    // var nodesBackup = unCompleteNodes;
+
+    // var nodes = unCompleteNodes.map( item => {
+
+    //     var labelName = item.labelName;
+
+    //     if(labelName == "Face" || labelName == "Boundary"){
+    //         return item;
+    //     }
+
+    //     if(labelName == "GeoEvent"){
+            
+    //         var label = item.label;
+    //         var connectedNodes = [];
+
+    //         unCompleteNodes.forEach(node => {
+
+    //             if( (node.label == item.label) && node.labelName !== "GeoEvent" ){
+    //                 connectedNodes.push(node);
+    //             }
+
+    //         });
+
+    //         if(connectedNodes.length <= 1){
+    //             return {
+    //                 id: item.id,
+    //                 x: connectedNodes[0].x+50,
+    //                 y: connectedNodes[0].y-50,
+    //                 label: item.label,
+    //                 labelName: item.labelName,
+    //                 properties: item.properties
+    //             }
+    //         }
+    //         else{
+    //             var averageX = 0;
+    //             var averageY = 0;
+
+    //             var sumX = 0;
+    //             var sumY = 0;
+
+    //             connectedNodes.forEach(node => {
+
+    //                 sumX += node.x;
+    //                 sumY += node.y;
+
+    //             })
+
+    //             averageX = Math.round(sumX/connectedNodes.length);
+    //             averageY = Math.round(sumY/connectedNodes.length);
+
+    //             return {
+    //                 id: item.id,
+    //                 x: averageX,
+    //                 y: averageY,
+    //                 label: item.label,
+    //                 labelName: item.labelName,
+    //                 properties: item.properties
+    //             }
+
+    //         }
+
+
+    //     }
+
+
+    // } )
+
+    var tempNum = 1000;
+
+    // var edges = rawedges.map(item => {
+    //   return {
+    //     // id: item.id.toString(),
+    //     source: item.startNode.toString(),
+    //     target: item.endNode.toString(),
+    //     label: item.relationName,
+    //     properties: item
+    //   }
+    // });
+    // console.log(edges.length);
+
+    var nodes = rawnodes.map(item => {
         return {
-            id: item.id.toString(),
-            x:xPos,
-            y:yPos,
+            // id: item.id.toString(),
+            id: item.fid.toString(),
             label: item.nodeName,
-            labelName:item.labelName,
+            labelName: item.labelName,
             properties: item
         }
     });
 
-    var nodesBackup = unCompleteNodes;
-
-    var nodes = unCompleteNodes.map( item => {
-
-        var labelName = item.labelName;
-
-        if(labelName == "Face" || labelName == "Boundary"){
-            return item;
-        }
-
-        if(labelName == "GeoEvent"){
-            
-            var label = item.label;
-            var connectedNodes = [];
-
-            unCompleteNodes.forEach(node => {
-
-                if( (node.label == item.label) && node.labelName !== "GeoEvent" ){
-                    connectedNodes.push(node);
-                }
-
-            });
-
-            if(connectedNodes.length <= 1){
-                return {
-                    id: item.id,
-                    x: connectedNodes[0].x+50,
-                    y: connectedNodes[0].y-50,
-                    label: item.label,
-                    labelName: item.labelName,
-                    properties: item.properties
-                }
-            }
-            else{
-                var averageX = 0;
-                var averageY = 0;
-
-                var sumX = 0;
-                var sumY = 0;
-
-                connectedNodes.forEach(node => {
-
-                    sumX += node.x;
-                    sumY += node.y;
-
-                })
-
-                averageX = Math.round(sumX/connectedNodes.length);
-                averageY = Math.round(sumY/connectedNodes.length);
-
-                return {
-                    id: item.id,
-                    x: averageX,
-                    y: averageY,
-                    label: item.label,
-                    labelName: item.labelName,
-                    properties: item.properties
-                }
-
-            }
-
-
-        }
-
-
-    } )
-
-    // var tempNum = 1000;
-
     var edges = rawedges.map(item => {
-      return {
-        // id: item.id.toString(),
-        source: item.startNode.toString(),
-        target: item.endNode.toString(),
-        label: item.relationName,
-        properties: item
-      }
-    });
+        tempNum++;
+        return {
+          id: tempNum.toString(),
+          source: item.startNode.toString(),
+          target: item.endNode.toString(),
+          label: item.relationName,
+          properties: item
+        }
+      });
     console.log(edges.length);
-
-    // var edges = rawedges.map(item => {
-    //     tempNum++;
-    //     return {
-    //       id: tempNum.toString(),
-    //       source: item.startNode.toString(),
-    //       target: item.endNode.toString(),
-    //       label: item.type,
-    //       properties: item
-    //     }
-    //   });
-    // console.log(edges.length);
 
 
     function checkNode(node){
@@ -1615,10 +1895,6 @@ function parseRawData(rawdata){
     function checkEdge(edge){
       return ((nodeIds.indexOf(edge.source) != -1) && (nodeIds.indexOf(edge.target) != -1));
     }
-
-    
-
-
 
     //与地质界线节点无关的节点
     var finalEdges = edges.filter(checkEdge);
@@ -1737,10 +2013,6 @@ function parseOntoQueryRes(rawdata){
     function checkEdge(edge){
       return ((nodeIds.indexOf(edge.source) != -1) && (nodeIds.indexOf(edge.target) != -1));
     }
-
-    
-
-    
 
     //与地质界线节点无关的边（关系）
     var finalEdges = edges.filter(checkEdge);
@@ -1994,7 +2266,11 @@ async function constructKG(){
 
         $('#closeCKG').click(function(){
             layer.close(index);
-        })
+        });
+
+        // $('#OKKG').click(function(){
+        //     layer.close(index);
+        // })
         
     });
 
@@ -2076,6 +2352,91 @@ async function identifyFold(){
 
 }
 
+async function createGeoRelationshipForm(){
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "地质关系创建",
+            content: $('#createGeoRelationshipForm'),
+            area: ['500px', '200px']
+        });
+
+        $('#closeCGRF').click(function(){
+            layer.close(index);
+        });
+        
+    });
+}
+
+async function createTemporalRelationshipForm(){
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "时间关系创建",
+            content: $('#createTemporalRelationshipForm'),
+            area: ['500px', '200px']
+        });
+
+        $('#closeCTRF').click(function(){
+            layer.close(index);
+        });
+        
+    });
+}
+
+async function parseTemporalIntervalOfEventForm(){
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "时间区间解析",
+            content: $('#inferTemporalIntervalOfEventForm'),
+            area: ['500px', '200px']
+        });
+
+        $('#closePTIEF').click(function(){
+            layer.close(index);
+        });
+        
+    });
+}
+
+async function detectAndCorrectTemporalConflictForm(){
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "冲突检测与校正",
+            content: $('#detectAndCorrectTemporalConflictForm'),
+            area: ['500px', '200px']
+        });
+
+        $('#closeDCTCF').click(function(){
+            layer.close(index);
+        });
+        
+    });
+}
+
+async function generateGeoEventSequenceForm(){
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "时间序列生成",
+            content: $('#generateGeoEventSequenceForm'),
+            area: ['500px', '200px']
+        });
+
+        $('#closeGGSF').click(function(){
+            layer.close(index);
+        });
+        
+    });
+}
+
 async function parseGeoEvByTime(){
     layui.use('layer', function(){
         var layer = layui.layer;
@@ -2144,5 +2505,68 @@ async function nodeRelaVisual(){
     });
 }
 
+async function createGeoRelationship(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/temporal/create-geological-relationship";
+        var temprawdata = await (await fetch(tempUrl)).json();
+        // console.log(temprawdata);
 
+        alert("地质关系创建成功!");
+
+    })
+
+
+}
+
+async function createTemporalRelationship(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/temporal/create-temporal-relationship";
+        var temprawdata = await (await fetch(tempUrl)).json();
+        // console.log(temprawdata);
+
+        alert("时间关系创建成功!");
+
+    })
+
+    
+}
+
+async function parseTemporalIntervalOfEvent(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/temporal/parse-temporal-interval";
+        var temprawdata = await (await fetch(tempUrl)).json();
+        // console.log(temprawdata);
+
+        alert("时间区间解析成功!");
+
+    })
+
+    
+}
+
+async function detectAndCorrectTemporalConflict(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/temporal/detect-correct-conflict";
+        var temprawdata = await (await fetch(tempUrl)).json();
+        // console.log(temprawdata);
+
+        alert("冲突检测与校正成功!");
+
+    })
+
+    
+}
+
+async function generateGeoEventSequence(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/temporal/generate-event-sequence";
+        var temprawdata = await (await fetch(tempUrl)).json();
+        // console.log(temprawdata);
+
+        alert("时间序列生成成功!");
+
+    })
+
+    
+}
 

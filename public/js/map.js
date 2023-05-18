@@ -387,6 +387,10 @@ function showSelectedLayer(){
             layerArray[i].setVisible(false);
         }
     }
+    // var source = layerArray[i].getSource();
+    //         var extent = source.getExtent();
+    //         var view = map.getView();
+    //         view.fit(extent);
 
 }
 

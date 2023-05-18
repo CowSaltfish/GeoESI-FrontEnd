@@ -35,6 +35,7 @@ layui.use('upload', function(){
             var shpName = $('#shpName').val();
             var shpSource = $('#shpSource').val();
             // var projection = $('#projection').val();
+            console.log("shpName:"+shpName);
 
             console.log(typeof(res));
             console.log(res.shpPath);
@@ -58,7 +59,7 @@ layui.use('upload', function(){
 
             if(shpArray.indexOf(shp) === -1){
 
-                // alert("file uploaded!");
+                alert("file uploaded!");
 
                 shpArray.push(shp);
 
@@ -72,17 +73,11 @@ layui.use('upload', function(){
                 if(regex.test(shp)){
                     var tempShp = shp;
                     var tempShpName = tempShp.replace("boundary", "");
-                    boundaryShpPathObj[tempShp] = finalShpPath;
-                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGDataSource');
-                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#GeoBoundDS');
-                    document.getElementById('closeCKG').click();
+                    boundaryShpPathObj[tempShpName] = finalShpPath;
                 }
                 else{
                     shpPathObj[shp] = finalShpPath;
-                    // $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGSource');
-                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGDataSource');
-                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#GeoBoundDS');
-                    document.getElementById('closeCKG').click();
+                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGSource');
                 }
 
                 fetch('http://localhost:8081/shp/toGeoJson?fullShpPath' + '=' + finalShpPath + '&' + 'fullGeoPath' + '=' + finalGeoPath).then((res) => {
