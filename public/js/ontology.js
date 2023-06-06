@@ -133,7 +133,7 @@ TB.onclick = function (e) {
 
 var index = "";
 
-async function createOntology(){
+async function createontology(){
     layui.use('layer', function(){
         var layer = layui.layer;
         index =  layer.open({
@@ -185,7 +185,7 @@ $('#confirmOntologySettings').click(function(){
 
         
 
-        window.open('../manipulationEditEdgeNoDragCopy.html');
+        window.open('../manipulationEditEdgeNoDrag.html');
 
     })
     .catch(error => {

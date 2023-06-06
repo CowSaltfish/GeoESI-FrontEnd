@@ -99,7 +99,7 @@ var dataArray = [];  //图数据数组
 var graphArray = [];  //图数组
 
 
-async function drawKGmap(kgName, kgData){
+async function KGDemo(){
 
     //自定义图布局
     // var graphlayout = $('#graphlayout').val();
@@ -118,26 +118,28 @@ async function drawKGmap(kgName, kgData){
     //     })
     // }
 
-    // var selectedDataSource = $('#KGSource').val();
-    // var KGName = $('#KGName').val();
-    // // var constructingMode = $('#constructingMode').val();
-    // var selectedlayout = $('#selectlayout').val();
-    // var selectedlegendpos = $('#selectlegendpos').val();
+    var selectedDataSource = $('#KGSource').val();
+    var KGName = $('#KGName').val();
+    // var constructingMode = $('#constructingMode').val();
+    var selectedlayout = $('#selectlayout').val();
+    var selectedlegendpos = $('#selectlegendpos').val();
+
 
     //new
     //新窗口配置
-     // var selectedKGDataSource = $('#KGDataSource').val();
-    // var selectedGeoBoundDS = $('#GeoBoundDS').val();
-    // var enteredKGName = $('#EnteredKGName').val();
-    
+    var selectedKGDataSource = $('#KGDataSource').val();
+    var selectedGeoBoundDS = $('#GeoBoundDS').val();
+    var enteredKGName = $('#EnteredKGName').val();
+
     //展示本地数据
     // var test_string = '实例知识图谱展示Demo';
     // var data = await (await fetch('/test/' + test_string)).json();
 
 
-    // var tempShpPath = shpPathObj[selectedKGDataSource];
-    // // var tempBoundaryShpPath = boundaryShpPathObj[selectedGeoBoundDS];
-    // var tempBoundaryShpPath = shpPathObj[selectedGeoBoundDS];
+    var tempShpPath = shpPathObj[selectedKGDataSource];
+    // var tempBoundaryShpPath = boundaryShpPathObj[selectedGeoBoundDS];
+    var tempBoundaryShpPath = shpPathObj[selectedGeoBoundDS];
+
     
 
     // var rawdata = {};
@@ -153,23 +155,23 @@ async function drawKGmap(kgName, kgData){
         // var rawdata = await (await fetch('http://localhost:5000/upload/testtwo.json')).json();
         // console.log(rawdata);
 
-        // var tempUrl = "http://localhost:8081/kg/create";
-        // var temprawdata = await (await fetch(tempUrl, {
-        //     method: 'post',
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify({
-        //         facePath: tempShpPath,
-        //         boundaryPath: tempBoundaryShpPath
-        //     })
-        // })).json();
-        // console.log(temprawdata);
+        var tempUrl = "http://localhost:8081/kg/create";
+        var temprawdata = await (await fetch(tempUrl, {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                facePath: tempShpPath,
+                boundaryPath: tempBoundaryShpPath
+            })
+        })).json();
+        console.log(temprawdata);
 
         layer.close(index);
         
         //解析图谱数据
-        var data = parseRawData(kgData);
+        var data = parseRawData(temprawdata);
 
         //使用本地数据
         // var data = await getAndParseKGData();
@@ -468,7 +470,6 @@ async function drawKGmap(kgName, kgData){
             // },
             layout: {
                 type: 'force',
-                // type: 'fruchterman',
                 linkDistance: 500,
                 nodeSize: 32,
                 // nodeStrength: 1,
@@ -486,7 +487,7 @@ async function drawKGmap(kgName, kgData){
             },
             // animate: true,
             defaultNode: {
-                size: 20,
+                size: 32,
                 color: 'steelblue',
                 style: {
                     lineWidth: 2,
@@ -526,173 +527,146 @@ async function drawKGmap(kgName, kgData){
         });
 
         // //为每类节点设置不同的样式
-        graph.node((node) => {
+        // graph.node((node) => {
 
-            // var labels = node.labels;
+        //     // var labels = node.labels;
 
-            // // var label = node.label;
-            // // var id = node.id;
-            // // if(label === 'I'){
-            // //     return {
-            // //         id: node.id,
-            // //         label: node.label,
-            // //         // type: "Boundary",
-            // //         style:{
-            // //             fill:"#FF9900",
-            // //             // stroke:"#000000"
-            // //         }
-            // //     }
-            // // }
+        //     // // var label = node.label;
+        //     // // var id = node.id;
+        //     // // if(label === 'I'){
+        //     // //     return {
+        //     // //         id: node.id,
+        //     // //         label: node.label,
+        //     // //         // type: "Boundary",
+        //     // //         style:{
+        //     // //             fill:"#FF9900",
+        //     // //             // stroke:"#000000"
+        //     // //         }
+        //     // //     }
+        //     // // }
 
-            // // if(label === 'I' && id === '8327'){
-            // //     return {
-            // //         id: node.id,
-            // //         label: node.label,
-            // //         // type: "Boundary",
-            // //         style:{
-            // //             fill:"#FF9900",
-            // //             // stroke:"#000000"
-            // //         }
-            // //     }
-            // // }
+        //     // // if(label === 'I' && id === '8327'){
+        //     // //     return {
+        //     // //         id: node.id,
+        //     // //         label: node.label,
+        //     // //         // type: "Boundary",
+        //     // //         style:{
+        //     // //             fill:"#FF9900",
+        //     // //             // stroke:"#000000"
+        //     // //         }
+        //     // //     }
+        //     // // }
 
-            // if(labels.indexOf("Boundary") !== -1){
-            //     return {
-            //         id: node.id,
-            //         label: node.label,
-            //         // type: "Boundary",
-            //         style:{
-            //             fill:"#CCCC99",
-            //             // stroke:"#000000"
-            //         }
-            //     }
-            // }else if(labels.indexOf("Face") !== -1){
-            //     return {
-            //         id: node.id,
-            //         label: node.label,
-            //         // type: "Face",
-            //         style:{
-            //             fill:"#00CCFF",
-            //             // stroke:"#000000"
-            //         }
-            //     }
-            // }else if(labels.indexOf("GeoEvent") !== -1){
-            //     return {
-            //         id: node.id,
-            //         label: node.label,
-            //         // type: "GeoEvent",
-            //         style:{
-            //             fill:"#FF9900",
-            //             // stroke:"#000000"
-            //         }
-            //     }
-            // }else if(labels.indexOf("Fault") !== -1){
-            //     return {
-            //         id: node.id,
-            //         label: node.label,
-            //         // type: "Fault",
-            //         style:{
-            //             fill:"#88EE88",
-            //             // stroke:"#000000"
-            //         }
-            //     }
-            // }else{
-            //     alert("New category founded!");
-            //     return {
-            //         id: node.id,
-            //         label: node.label,
-            //         style:{
-            //             fill:"#FFFFFF",
-            //             stroke:"#000000"
-            //         }
-            //     }
-            // }
+        //     // if(labels.indexOf("Boundary") !== -1){
+        //     //     return {
+        //     //         id: node.id,
+        //     //         label: node.label,
+        //     //         // type: "Boundary",
+        //     //         style:{
+        //     //             fill:"#CCCC99",
+        //     //             // stroke:"#000000"
+        //     //         }
+        //     //     }
+        //     // }else if(labels.indexOf("Face") !== -1){
+        //     //     return {
+        //     //         id: node.id,
+        //     //         label: node.label,
+        //     //         // type: "Face",
+        //     //         style:{
+        //     //             fill:"#00CCFF",
+        //     //             // stroke:"#000000"
+        //     //         }
+        //     //     }
+        //     // }else if(labels.indexOf("GeoEvent") !== -1){
+        //     //     return {
+        //     //         id: node.id,
+        //     //         label: node.label,
+        //     //         // type: "GeoEvent",
+        //     //         style:{
+        //     //             fill:"#FF9900",
+        //     //             // stroke:"#000000"
+        //     //         }
+        //     //     }
+        //     // }else if(labels.indexOf("Fault") !== -1){
+        //     //     return {
+        //     //         id: node.id,
+        //     //         label: node.label,
+        //     //         // type: "Fault",
+        //     //         style:{
+        //     //             fill:"#88EE88",
+        //     //             // stroke:"#000000"
+        //     //         }
+        //     //     }
+        //     // }else{
+        //     //     alert("New category founded!");
+        //     //     return {
+        //     //         id: node.id,
+        //     //         label: node.label,
+        //     //         style:{
+        //     //             fill:"#FFFFFF",
+        //     //             stroke:"#000000"
+        //     //         }
+        //     //     }
+        //     // }
 
 
             
-            var labelName = node.properties.labelName;
+        //     var labelName = node.properties.labelName;
 
-            var eventType = node.properties.eventType;
-            
+        //     if(labelName === "Boundary"){
+        //         return {
+        //             id: node.id,
+        //             label: node.label,
+        //             // type: "Boundary",
+        //             style:{
+        //                 fill:"#CCCC99",
+        //                 // stroke:"#000000"
+        //             }
+        //         }
+        //     }else if(labelName === "Face"){
+        //         return {
+        //             id: node.id,
+        //             label: node.label,
+        //             // type: "Face",
+        //             style:{
+        //                 fill:"#00CCFF",
+        //                 // stroke:"#000000"
+        //             }
+        //         }
+        //     }else if(labelName === "GeoEvent"){
+        //         return {
+        //             id: node.id,
+        //             label: node.label,
+        //             // type: "GeoEvent",
+        //             style:{
+        //                 fill:"#FF9900",
+        //                 // stroke:"#000000"
+        //             }
+        //         }
+        //     }else if(labelName === "Fault"){
+        //         return {
+        //             id: node.id,
+        //             label: node.label,
+        //             // type: "Fault",
+        //             style:{
+        //                 fill:"#88EE88",
+        //                 // stroke:"#000000"
+        //             }
+        //         }
+        //     }else{
+        //         console.log(labelName)
+        //         alert("New category founded!");
+        //         return {
+        //             id: node.id,
+        //             label: node.label,
+        //             style:{
+        //                 fill:"#FFFFFF",
+        //                 stroke:"#000000"
+        //             }
+        //         }
+        //     }
 
-            if(labelName === "Boundary"){
-                return {
-                    id: node.id,
-                    label: node.label,
-                    // type: "Boundary",
-                    style:{
-                        fill:"#CCCC99",
-                        // stroke:"#000000"
-                    }
-                }
-            }else if(labelName === "Face"){
-                return {
-                    id: node.id,
-                    label: node.label,
-                    // type: "Face",
-                    style:{
-                        fill:"#00CCFF",
-                        // stroke:"#000000"
-                    }
-                }
-            }else if(labelName === "GeoEvent"){
-                if(eventType==="FRACTURE"){
-                    return {
-                        id: node.id,
-                        label: node.label,
-                        // type: "GeoEvent",
-                        style:{
-                            fill:"#fa8072",
-                            // stroke:"#000000"
-                        }
-                    }
-                }
-                else if(eventType==="GENERATION"){
-                    return {
-                        id: node.id,
-                        label: node.label,
-                        // type: "GeoEvent",
-                        style:{
-                            fill:"#2e8b57",
-                            // stroke:"#000000"
-                        }
-                    }
-                }
-                else{
-                    return {
-                        id: node.id,
-                        label: node.label,
-                        // type: "GeoEvent",
-                        style:{
-                            fill:"#FF9900",
-                            // stroke:"#000000"
-                        }
-                    }
-                }
-            }else if(labelName === "Fault"){
-                return {
-                    id: node.id,
-                    label: node.label,
-                    // type: "Fault",
-                    style:{
-                        fill:"#88EE88",
-                        // stroke:"#000000"
-                    }
-                }
-            }else{
-                console.log(labelName)
-                // alert("New category founded!");
-                return {
-                    id: node.id,
-                    label: node.label,
-                    style:{
-                        fill:"#FFFFFF",
-                        stroke:"#000000"
-                    }
-                }
-            }
-
-        });
+        // });
 
 
         console.log("渲染时的数据内容：");
@@ -701,21 +675,21 @@ async function drawKGmap(kgName, kgData){
         graph.data(data);
         graph.render();
 
-        // graph.on('node:dragstart', function(e) {
+        graph.on('node:dragstart', function(e) {
             
-        //     // const forceLayout = graph.get('layoutController').layoutMethods[0];
-        //     // forceLayout.stop();
+            // const forceLayout = graph.get('layoutController').layoutMethods[0];
+            // forceLayout.stop();
 
-        //     graph.layout();
-        //     // refreshDragedNodePosition(e);
-        // });
-        // graph.on('node:drag', function(e) {
-        //     // refreshDragedNodePosition(e);
-        // });
-        // graph.on('node:dragend', function(e) {
-        //     e.item.get('model').fx = null;
-        //     e.item.get('model').fy = null;
-        // });
+            graph.layout();
+            refreshDragedNodePosition(e);
+        });
+        graph.on('node:drag', function(e) {
+            refreshDragedNodePosition(e);
+        });
+        graph.on('node:dragend', function(e) {
+            e.item.get('model').fx = null;
+            e.item.get('model').fy = null;
+        });
         graph.on('node:mouseenter', (e) => {
             graph.setItemState(e.item, 'active', true);
         });
@@ -733,7 +707,7 @@ async function drawKGmap(kgName, kgData){
         graphArray.push(graph);
 
         //在左侧面板的知识图谱列表中添加刚刚新建的图谱
-        $('<dd><a id="' + graphIndex.toString() + '"' + ' href="javascript:;" >'+ kgName +'</a></dd>').appendTo('#graphList');
+        $('<dd><a id="' + graphIndex.toString() + '"' + ' href="javascript:;" >'+ enteredKGName +'</a></dd>').appendTo('#graphList');
 
         //重新渲染左侧导航栏
         layui.use('element', function(){
@@ -810,46 +784,6 @@ async function drawKGmap(kgName, kgData){
 
 }
 
-async function constructKGMap(){
-    
-    //地层数据
-    var selectedKGDataSource = $('#KGDataSource').val();
-    //地质界线数据
-    var selectedGeoBoundDS = $('#GeoBoundDS').val();
-    //图谱名称
-    var enteredKGName = $('#EnteredKGName').val();
-    console.log(selectedKGDataSource);
-
-    //地层数据路径
-    var tempShpPath = shpPathObj[selectedKGDataSource];
-    // var tempBoundaryShpPath = boundaryShpPathObj[selectedGeoBoundDS];
-    //地质界线数据路径
-    var tempBoundaryShpPath = shpPathObj[selectedGeoBoundDS];
-
-    console.log(tempShpPath);
-    console.log(tempBoundaryShpPath);
-
-    //获取图谱数据
-    var tempUrl = "http://localhost:8081/kg/create";
-    var temprawdata = await (await fetch(tempUrl, {
-        method: 'post',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            facePath: tempShpPath,
-            boundaryPath: tempBoundaryShpPath
-        })
-    })).json();
-    console.log(temprawdata);
-
-    //绘制图谱
-    drawKGmap(enteredKGName, temprawdata);
-
-    //切换到图谱面板
-    document.getElementById('opengraph').click();
-
-}
 function showOntoQueryRes(kgName, queryRes){
 
     layui.use('layer', async function(){
@@ -1377,10 +1311,10 @@ function showOntoQueryRes(kgName, queryRes){
             // forceLayout.stop();
 
             graph.layout();
-            // refreshDragedNodePosition(e);
+            refreshDragedNodePosition(e);
         });
         graph.on('node:drag', function(e) {
-            // refreshDragedNodePosition(e);
+            refreshDragedNodePosition(e);
         });
         graph.on('node:dragend', function(e) {
             e.item.get('model').fx = null;
@@ -1922,7 +1856,7 @@ function parseRawData(rawdata){
     var nodes = rawnodes.map(item => {
         return {
             // id: item.id.toString(),
-            id: item.id.toString(),
+            id: item.fid.toString(),
             label: item.nodeName,
             labelName: item.labelName,
             properties: item
@@ -1935,20 +1869,19 @@ function parseRawData(rawdata){
           id: tempNum.toString(),
           source: item.startNode.toString(),
           target: item.endNode.toString(),
-          label: item.relationName!=null?item.relationName:item.properties.relationName,
+          label: item.relationName,
           properties: item
         }
       });
     console.log(edges.length);
 
-    //筛选节点类型
-    // function checkNode(node){
-    //   return node.labelName !== 'Boundary' && node.labelName !== "GeoEvent" ;
-    // }
+
+    function checkNode(node){
+      return node.labelName !== 'Boundary' && node.labelName !== "GeoEvent" ;
+    }
     
     //非地质界线节点
-    // var finalNodes = nodes.filter(checkNode);
-    var finalNodes = nodes;
+    var finalNodes = nodes.filter(checkNode);
     console.log("节点数：");
     console.log(finalNodes.length);
 
@@ -2328,7 +2261,7 @@ async function constructKG(){
             type: 1,
             title: "知识图谱构建",
             content: $('#constructKG'),
-            area: ['500px', '280px']
+            area: ['500px', '300px']
         });
 
         $('#closeCKG').click(function(){
@@ -2368,7 +2301,7 @@ async function queryByKnow(){
         var layer = layui.layer;
         index =  layer.open({
             type: 1,
-            title: "知识图谱查询",
+            title: "知识查询",
             content: $('#queryByKnow'),
             area: ['500px', '300px']
         });
@@ -2389,7 +2322,7 @@ async function identifyOneFault(){
             type: 1,
             title: "断层构造个体识别",
             content: $('#identifyOneFault'),
-            area: ['500px', '350px']
+            area: ['500px', '180px']
         });
 
         $('#closeIOF').click(function(){
@@ -2429,9 +2362,6 @@ async function createGeoRelationshipForm(){
             area: ['500px', '200px']
         });
 
-        $('#okCGRF').click(function(){
-            layer.close(index);
-        });
         $('#closeCGRF').click(function(){
             layer.close(index);
         });
@@ -2449,9 +2379,6 @@ async function createTemporalRelationshipForm(){
             area: ['500px', '200px']
         });
 
-        $('#okCTRF').click(function(){
-            layer.close(index);
-        });
         $('#closeCTRF').click(function(){
             layer.close(index);
         });
@@ -2465,16 +2392,14 @@ async function parseTemporalIntervalOfEventForm(){
         index =  layer.open({
             type: 1,
             title: "时间区间解析",
-            content: $('#parseTemporalIntervalOfEventForm'),
+            content: $('#inferTemporalIntervalOfEventForm'),
             area: ['500px', '200px']
         });
 
-        $('#okPTIEF').click(function(){
-            layer.close(index);
-        });
         $('#closePTIEF').click(function(){
             layer.close(index);
         });
+        
     });
 }
 
@@ -2488,12 +2413,10 @@ async function detectAndCorrectTemporalConflictForm(){
             area: ['500px', '200px']
         });
 
-        $('#okDCTCF').click(function(){
-            layer.close(index);
-        });
         $('#closeDCTCF').click(function(){
             layer.close(index);
         });
+        
     });
 }
 
@@ -2507,12 +2430,10 @@ async function generateGeoEventSequenceForm(){
             area: ['500px', '200px']
         });
 
-        $('#okGGSF').click(function(){
-            layer.close(index);
-        });
         $('#closeGGSF').click(function(){
             layer.close(index);
         });
+        
     });
 }
 
@@ -2557,7 +2478,7 @@ async function identifyCircStruc(){
             type: 1,
             title: "穹窿/盆地/方山识别",
             content: $('#identifyCircStruc'),
-            area: ['750px', '350px']
+            area: ['750px', '330px']
         });
 
         $('#closeICS').click(function(){
@@ -2584,41 +2505,11 @@ async function nodeRelaVisual(){
     });
 }
 
-async function queryByCypher(){
-    layui.use('layer', async function(){
-        var cypher = $('#cypherText').val();
-        console.log(cypher);
-
-        var tempUrl = "http://localhost:8081/kg/search";
-        var temprawdata = await(await fetch(tempUrl+'?cypher=' + cypher , {
-            method: 'get'
-        })).json();
-        // console.log(temprawdata);
-
-        //绘制图谱
-        drawKGmap("查询图", temprawdata);
-
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
-
-        alert("知识查询成功!");
-
-    })
-
-
-}
-
 async function createGeoRelationship(){
     layui.use('layer', async function(){
         var tempUrl = "http://localhost:8081/temporal/create-geological-relationship";
         var temprawdata = await (await fetch(tempUrl)).json();
         // console.log(temprawdata);
-
-        //绘制图谱
-        drawKGmap("地质关系子图", temprawdata);
-
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
 
         alert("地质关系创建成功!");
 
@@ -2633,12 +2524,6 @@ async function createTemporalRelationship(){
         var temprawdata = await (await fetch(tempUrl)).json();
         // console.log(temprawdata);
 
-        //绘制图谱
-        drawKGmap("时间关系子图", temprawdata);
-        
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
-
         alert("时间关系创建成功!");
 
     })
@@ -2651,12 +2536,6 @@ async function parseTemporalIntervalOfEvent(){
         var tempUrl = "http://localhost:8081/temporal/parse-temporal-interval";
         var temprawdata = await (await fetch(tempUrl)).json();
         // console.log(temprawdata);
-
-        // //绘制图谱
-        drawKGmap("断裂事件时间区间子图", temprawdata);
-
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
 
         alert("时间区间解析成功!");
 
@@ -2671,15 +2550,7 @@ async function detectAndCorrectTemporalConflict(){
         var temprawdata = await (await fetch(tempUrl)).json();
         // console.log(temprawdata);
 
-        //绘制图谱
-        drawKGmap("冲突校正后的时间关系子图", temprawdata);
-
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
-
         alert("冲突检测与校正成功!");
-        alert("有向环个数：\n3\n删除时间关系：\nNE13-NE14 NW6-NE13 NW7-NE6");
-
 
     })
 
@@ -2691,12 +2562,6 @@ async function generateGeoEventSequence(){
         var tempUrl = "http://localhost:8081/temporal/generate-event-sequence";
         var temprawdata = await (await fetch(tempUrl)).json();
         // console.log(temprawdata);
-
-        //绘制图谱
-        drawKGmap("地质事件时间序列", temprawdata);
-
-        //切换到图谱面板
-        document.getElementById('opengraph').click();
 
         alert("时间序列生成成功!");
 

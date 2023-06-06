@@ -205,10 +205,18 @@ function showPlanMap(geoJsonData, shp){
         // console.log(feature.get(6));
         // return styles[feature.getProperties()['地层类']];
         var color = colors[feature.get('地层类')];
+        var lineColor = 'black', lineWidth =1;
+        console.log(shp.toString());
+        if(shp.toString().includes("fault")){
+            lineColor = 'red';
+            lineWidth = 5;
+        }
         return new ol.style.Style({
             stroke: new ol.style.Stroke({
-                color: 'black',
-                width: 1
+                // color: 'black',
+                // width: 1
+                color: lineColor,
+                width: lineWidth
             }),
             fill: new ol.style.Fill({
                 color: color
@@ -384,7 +392,7 @@ function showSelectedLayer(){
 
         }
         else{
-            layerArray[i].setVisible(false);
+            // layerArray[i].setVisible(false);
         }
     }
     // var source = layerArray[i].getSource();

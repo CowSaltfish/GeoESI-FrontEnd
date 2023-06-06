@@ -52,13 +52,14 @@
           <dd><a onclick="addShp()">导入地图数据</a></dd>
           <dd><a onclick="test()">导入地层年代表</a></dd>
           <dd><a href="">导入知识图谱</a></dd>
+          <dd><a href="">导出知识图谱</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">场景模式管理</a>
         <dl class="layui-nav-child">
-          <dd><a href="">新建</a></dd>
-          <dd><a href="">管理</a></dd>
+          <dd><a onclick="createontology()">新建</a></dd>
+          <dd><a onclick="manageOntology()">管理</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -68,7 +69,6 @@
           <dd><a onclick="constructKG()">知识图谱构建</a></dd>
           <dd><a onclick="fuseKG()">知识图谱融合</a></dd>
           <dd><a onclick="queryByKnow()">知识图谱查询</a></dd>
-          <dd><a>知识图谱清空</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -77,7 +77,7 @@
           <dd><a onclick="identifyOneFault()">断层构造个体识别</a></dd>
           <dd><a onclick="identifyFaults()">断层构造组合识别</a></dd>
           <dd><a onclick="identifyFold()">褶皱构造识别</a></dd>
-          <dd><a onclick="identifyCircStruc()">穹窿盆地方山识别</a></dd>
+          <dd><a onclick="identifyCircStruc()">穹窿/盆地/方山识别</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -94,7 +94,8 @@
         <a href="javascript:;">配置</a>
         <dl class="layui-nav-child">
           <dd><a onclick="nodeRelaVisual()">本体模型管理</a></dd>
-          <dd><a onclick="nodeRelaVisual()">可视化设置</a></dd>
+          <dd><a onclick="nodeRelaVisual()">节点关系可视化设置</a></dd>
+          <dd><a onclick="nodeRelaVisual()">图谱整体可视化设置</a></dd>
           <!-- <dd><a onclick="KGDemo()">实例知识图谱展示Demo</a></dd> -->
           <!-- <dd><a id="exportKGJson">导出图谱</a></dd> -->
           <!-- <dd><a id="exportPic">导出图片</a></dd> -->
@@ -149,11 +150,73 @@
             <dd><a href="javascript:;">Knowledge Graph 3</a></dd> -->
           </dl>
         </li>
-        <!-- <li class="layui-nav-item"><a href="javascript:;">click menu item</a></li>
-        <li class="layui-nav-item"><a href="">the links</a></li> -->
+        <!-- <li class="layui-nav-item">
+          <a href="javascript:;">查询结果</a>
+          <dl id="resultList" class="layui-nav-child"> -->
+            <!-- <dd><a href="javascript:;">Knowledge Graph 1</a></dd>
+            <dd><a href="javascript:;">Knowledge Graph 2</a></dd>
+            <dd><a href="javascript:;">Knowledge Graph 3</a></dd> -->
+            <!-- <dd href="javascript:;">
+              <a>倾向断层2</a>
+              <dl>
+                <dd href="javascript:;">
+                  <a>倾向断层3</a>
+                </dd>
+              </dl>
+            </dd>
+          </dl>
+        </li> -->
+        <li class="layui-nav-item">
+        <!-- <li class="layui-nav-item layui-nav-itemed"> -->
+          <a href="javascript:;">查询结果</a>
+          <dl id="resultList" class="layui-nav-child">
+            <!-- <dd><a href="javascript:;">选项1</a></dd>
+            <dd><a href="javascript:;">选项2</a></dd> -->
+            <!-- <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;" id="menu_three">倾向断层</a>
+              <ol class="layui-nav-child">
+                <li><a href="javascript:;">D1</a></li>
+                <li><a href="javascript:;">D2</a></li>
+                <li><a href="javascript:;">D3</a></li>
+                <li><a href="javascript:;">D4</a></li>
+                <li><a href="javascript:;">D5</a></li>
+                <li><a href="javascript:;">D6</a></li>
+                <li><a href="javascript:;">D7</a></li>
+                <li><a href="javascript:;">D8</a></li>
+                <li><a href="javascript:;">D9</a></li>
+                <li><a href="javascript:;">D10</a></li>
+              </ol>
+            </li> -->
+            <!-- <li class="layui-nav-item layui-nav-itemed">
+              <a href="javascript:;" id="menu_three">走向断层</a>
+              <ol class="layui-nav-child">
+                <li><a href="javascript:;">T1</a></li>
+                <li><a href="javascript:;">T2</a></li>
+                <li><a href="javascript:;">T3</a></li>
+                <li><a href="javascript:;">T4</a></li>
+                <li><a href="javascript:;">T5</a></li>
+                <li><a href="javascript:;">T6</a></li>
+                <li><a href="javascript:;">T7</a></li>
+                <li><a href="javascript:;">T8</a></li>
+                <li><a href="javascript:;">T9</a></li>
+                <li><a href="javascript:;">T10</a></li>
+                <li><a href="javascript:;">T11</a></li>
+                <li><a href="javascript:;">T12</a></li>
+                <li><a href="javascript:;">T13</a></li>
+                <li><a href="javascript:;">T14</a></li>
+                <li><a href="javascript:;">T15</a></li>
+                <li><a href="javascript:;">T16</a></li>
+                <li><a href="javascript:;">T17</a></li>
+                <li><a href="javascript:;">T18</a></li>
+                <li><a href="javascript:;">T19</a></li>
+              </ol>
+            </li> -->
+          </dl>
+        </li>
       </ul>
     </div>
   </div>
+  
   
   <div class="layui-body">
     <!-- 内容主体区域 -->
@@ -506,7 +569,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="OKKG" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="KGDemo()">确定</button>
+        <button id="OKKG" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="constructKGMap()">确定</button>
         <button id="closeCKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -606,10 +669,38 @@
   <br>
   <form action="" class="layui-form layui-form-pane">
     <div class="layui-form-item">
-      <label for="" class="layui-form-label">识别范围</label>
+
+      <label class="layui-form-label" style="width:150px;">回归决定系数阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入回归决定系数阈值" style="width:350px;">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label" style="width:150px;">近直界线阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入近直界线阈值" style="width:350px;">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label class="layui-form-label" style="width:150px;">地层年代差阈值</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入地层年代差阈值" style="width:350px;">
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <label for="" class="layui-form-label" style="width:150px;">识别范围</label>
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
-      <div class="layui-input-block">
-          <!-- 下拉选择框
+      <div class="layui-input-inline"  style="width:340px;">
+        <!-- 下拉选择框
                   1、通过selected属性设置默认选中项
                   2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
                   3、可以通过 optgroup 标签给select分组
@@ -617,12 +708,14 @@
           -->
           <select id="" name="mode" required lay-verify="required">
               <option value="">请设置识别范围</option>
+              <option value="qixiashan">Qixiashan</option>
               <!-- <option value="010">shapefile1</option> -->
               <!-- <option value="021">shapefile2</option> -->
               <!-- <option value="0571">shapefile3</option> -->
           </select>
       </div>
     </div>
+
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
         <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
@@ -662,11 +755,11 @@
   </form>
 </div>
 
-<div id="queryByKnow" style="display: none;">
+<!-- <div id="queryByKnow" style="display: none;">
   <br>
   <form action="" class="layui-form layui-form-pane">
     <div class="layui-form-item layui-form-text">
-      <label class="layui-form-label">文本域</label>
+      <label class="layui-form-label">查询条件</label>
       <div class="layui-input-block">
         <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
       </div>
@@ -678,7 +771,37 @@
       </div>
     </div>
   </form>
+</div> -->
+
+<div id="queryByKnow" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label class="layui-form-label">查询条件</label>
+      <div class="layui-input-block">
+        <div class="layui-inline">
+          <textarea id="cypherText" name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+        </div>
+        <div class="layui-inline">
+          <button id="newButton" type="button" class="layui-btn layui-btn">新建</button>
+        </div>
+        <div class="layui-inline">
+          <button id="openButton" type="button" class="layui-btn layui-btn">打开</button>
+        </div>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="okQC" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="queryByCypher()">确定</button>
+        <button id="closeQC" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
 </div>
+
+
+
+
 
 <div id="parseGeoEvByTime" style="display: none;">
   <br>
@@ -734,7 +857,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createGeoRelationship()">确定</button>
+        <button id="okCGRF" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createGeoRelationship()">确定</button>
         <button id="closeCGRF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -756,7 +879,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createTemporalRelationship()">确定</button>
+        <button id="okCTRF" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createTemporalRelationship()">确定</button>
         <button id="closeCTRF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -768,17 +891,19 @@
   <br>
   <form action="" class="layui-form layui-form-pane">
     <div class="layui-form-item">
-      <label for="" class="layui-form-label">作用范围</label>
+      <label for="" class="layui-form-label">事件类型</label>
       <div class="layui-input-block">
           <select id="" name="mode" required lay-verify="required">
               <option value="">请设置识别范围</option>
-              <option value="allGE">所有地质事件</option>
+              <option value="fault">断裂事件</option>
+              <option value="invasion">侵入事件</option>
+              <option value="fold">褶皱事件</option>
           </select>
       </div>
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="parseTemporalIntervalOfEvent()">确定</button>
+        <button id="okPTIEF" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="parseTemporalIntervalOfEvent()">确定</button>
         <button id="closePTIEF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -800,7 +925,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="detectAndCorrectTemporalConflict()">确定</button>
+        <button id="okDCTCF" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="detectAndCorrectTemporalConflict()">确定</button>
         <button id="closeDCTCF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -822,7 +947,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="generateGeoEventSequence()">确定</button>
+        <button id="okGGSF" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="generateGeoEventSequence()">确定</button>
         <button id="closeGGSF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -852,7 +977,7 @@
     </div>
     <div class="layui-form-item">
       <div class="layui-inline">
-        <label class="layui-form-label" style="width: 150px;">进直界线阈值</label>
+        <label class="layui-form-label" style="width: 150px;">近直界线阈值</label>
         <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
         <div class="layui-input-inline" style="width: 200px;">
             <!-- 文本框 -->
@@ -898,6 +1023,27 @@
 <div id="identifyCircStruc" style="display: none;">
   <br>
   <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">构造类型</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+            <option value="">请设置识别范围</option>
+            <option value="dome">穹窿构造</option>
+            <option value="basin">构造盆地</option>
+            <option value="mesa">构造方山</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
     <div class="layui-form-item">
       <label for="" class="layui-form-label">识别范围</label>
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->

@@ -52,6 +52,7 @@
           <dd><a onclick="addShp()">导入地图数据</a></dd>
           <dd><a onclick="test()">导入地层年代表</a></dd>
           <dd><a href="">导入知识图谱</a></dd>
+          <dd><a href="">导出知识图谱</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -68,7 +69,6 @@
           <dd><a onclick="constructKG()">知识图谱构建</a></dd>
           <dd><a onclick="fuseKG()">知识图谱融合</a></dd>
           <dd><a onclick="queryByKnow()">知识图谱查询</a></dd>
-          <dd><a>知识图谱清空</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -77,17 +77,17 @@
           <dd><a onclick="identifyOneFault()">断层构造个体识别</a></dd>
           <dd><a onclick="identifyFaults()">断层构造组合识别</a></dd>
           <dd><a onclick="identifyFold()">褶皱构造识别</a></dd>
-          <dd><a onclick="identifyCircStruc()">穹窿盆地方山识别</a></dd>
+          <dd><a onclick="identifyCircStruc()">穹窿/盆地/方山识别</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
         <a href="javascript:;">地质事件时序解析</a>
         <dl class="layui-nav-child">
-          <dd><a onclick="parseGeoEvByTime()">地质关系创建</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">时间关系创建</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">时间区间解析</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">冲突检测校正</a></dd>
-          <dd><a onclick="parseGeoEvByTime()">时间序列生成</a></dd>
+          <dd><a onclick="createGeoRelationshipForm()">地质关系创建</a></dd>
+          <dd><a onclick="createTemporalRelationshipForm()">时间关系创建</a></dd>
+          <dd><a onclick="parseTemporalIntervalOfEventForm()">时间区间解析</a></dd>
+          <dd><a onclick="detectAndCorrectTemporalConflictForm()">冲突检测校正</a></dd>
+          <dd><a onclick="generateGeoEventSequenceForm()">时间序列生成</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -468,8 +468,8 @@
                   3、可以通过 optgroup 标签给select分组
                   4、通过lay-search属性开启搜索匹配功能
           -->
-          <select id="" name="mode" required lay-verify="required">
-              <option value="">请选择文件</option>
+          <select id="KGDataSource" name="mode" required lay-verify="required">
+              <option value="">请选择地层数据</option>
               <!-- <option value="010">shapefile1</option> -->
               <!-- <option value="021">shapefile2</option> -->
               <!-- <option value="0571">shapefile3</option> -->
@@ -487,8 +487,8 @@
                   3、可以通过 optgroup 标签给select分组
                   4、通过lay-search属性开启搜索匹配功能
           -->
-          <select id="" name="mode" required lay-verify="required">
-              <option value="">请选择文件</option>
+          <select id="GeoBoundDS" name="mode" required lay-verify="required">
+              <option value="">请选择地质界线数据</option>
               <!-- <option value="010">shapefile1</option> -->
               <!-- <option value="021">shapefile2</option> -->
               <!-- <option value="0571">shapefile3</option> -->
@@ -501,12 +501,12 @@
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
       <div class="layui-input-block">
           <!-- 文本框 -->
-          <input id="" type="text" name="title" class="layui-input" placeholder="请输入知识图谱名称">
+          <input id="EnteredKGName" type="text" name="title" class="layui-input" placeholder="请输入知识图谱名称">
       </div>
     </div>
     <div class="layui-form-item">
       <div class="layui-input-block layui-row">
-        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
+        <button id="OKKG" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="KGDemo()">确定</button>
         <button id="closeCKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
@@ -579,22 +579,18 @@
           </select>
       </div>
     </div>
-    <div class="layui-form-item">
-      <label for="" class="layui-form-label">剖面线数据</label>
-      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
-      <div class="layui-input-block">
-          <!-- 下拉选择框
-                  1、通过selected属性设置默认选中项
-                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
-                  3、可以通过 optgroup 标签给select分组
-                  4、通过lay-search属性开启搜索匹配功能
-          -->
-          <select id="" name="mode" required lay-verify="required">
-              <option value="">请选择文件</option>
-              <!-- <option value="010">shapefile1</option> -->
-              <!-- <option value="021">shapefile2</option> -->
-              <!-- <option value="0571">shapefile3</option> -->
-          </select>
+    <div class="layui-form-item layui-row">
+      <div class="layui-inline layui-col-md9">
+        <label for="" class="layui-form-label">剖面线数据</label>
+        <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+        <div class="layui-input-block">
+            <!-- 文本框 -->
+            <input id="" type="text" name="title" class="layui-input" placeholder="请输入剖面线数据">
+        </div>
+      </div>
+      <div class="layui-inline layui-col-md2">
+        <button id="" type="button" class="layui-btn layui-btn">选择文件</button>
+
       </div>
     </div>
     <div class="layui-form-item">
@@ -723,6 +719,116 @@
   </form>
 </div>
 
+<!-- 地质关系创建 -->
+<div id="createGeoRelationshipForm" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">作用范围</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <option value="allKG">所有知识图谱</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createGeoRelationship()">确定</button>
+        <button id="closeCGRF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- 时间关系创建 -->
+<div id="createTemporalRelationshipForm" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">作用范围</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <option value="allKG">所有知识图谱</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="createTemporalRelationship()">确定</button>
+        <button id="closeCTRF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- 时间区间解析 -->
+<div id="parseTemporalIntervalOfEventForm" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">作用范围</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <option value="allGE">所有地质事件</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="parseTemporalIntervalOfEvent()">确定</button>
+        <button id="closePTIEF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- 冲突检测与校正 -->
+<div id="detectAndCorrectTemporalConflictForm" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">作用范围</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <option value="allGETR">所有地质事件时间关系</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="detectAndCorrectTemporalConflict()">确定</button>
+        <button id="closeDCTCF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<!-- 时间序列生成 -->
+<div id="generateGeoEventSequenceForm" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">作用范围</label>
+      <div class="layui-input-block">
+          <select id="" name="mode" required lay-verify="required">
+              <option value="">请设置识别范围</option>
+              <option value="allGE">所有地质事件</option>
+          </select>
+      </div>
+    </div>
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="generateGeoEventSequence()">确定</button>
+        <button id="closeGGSF" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
 <div id="identifyFaults" style="display: none;">
   <br>
   <form action="" class="layui-form layui-form-pane">
@@ -792,6 +898,27 @@
 <div id="identifyCircStruc" style="display: none;">
   <br>
   <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item">
+      <label for="" class="layui-form-label">构造类型</label>
+      <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->
+      <div class="layui-input-block">
+          <!-- 下拉选择框
+                  1、通过selected属性设置默认选中项
+                  2、通过disabled属性开启禁用，可以设置select和option标签（分别表示禁用下拉框和禁用下拉选项）
+                  3、可以通过 optgroup 标签给select分组
+                  4、通过lay-search属性开启搜索匹配功能
+          -->
+          <select id="" name="mode" required lay-verify="required">
+            <option value="">请设置识别范围</option>
+            <option value="dome">穹窿构造</option>
+            <option value="basin">构造盆地</option>
+            <option value="mesa">构造方山</option>
+              <!-- <option value="010">shapefile1</option> -->
+              <!-- <option value="021">shapefile2</option> -->
+              <!-- <option value="0571">shapefile3</option> -->
+          </select>
+      </div>
+    </div>
     <div class="layui-form-item">
       <label for="" class="layui-form-label">识别范围</label>
       <!-- 不想让输入框占一整行的话，可以把 layui-input-block 换成 layui-input-inline -->

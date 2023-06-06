@@ -70,10 +70,10 @@ layui.use('upload', function(){
                 var regex = /boundary$/;
 
                 if(regex.test(shp)){
-                    var tempShp = shp;
-                    var tempShpName = tempShp.replace("boundary", "");
-                    boundaryShpPathObj[tempShp] = finalShpPath;
-                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGDataSource');
+                    // var tempShp = shp;
+                    // var tempShpName = tempShp.replace("boundary", "");
+                    shpPathObj[shp] = finalShpPath;
+                    boundaryShpPathObj[shp] = finalShpPath;                    $('<option value="' + shp + '">' + shp +'</option>').appendTo('#KGDataSource');
                     $('<option value="' + shp + '">' + shp +'</option>').appendTo('#GeoBoundDS');
                     document.getElementById('closeCKG').click();
                 }
@@ -92,7 +92,7 @@ layui.use('upload', function(){
                         if(shpSource === "section"){
                             showSectionMap(result, shp);
                         }
-                        else if(shpSource === "plan"||shpSource === "boundary"){
+                        else if(shpSource === "plan" || shpSource === "boundary"){
                             showPlanMap(result, shp);
                         }
                         
