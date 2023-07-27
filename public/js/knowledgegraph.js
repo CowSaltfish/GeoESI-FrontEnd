@@ -850,6 +850,14 @@ async function constructKGMap(){
     document.getElementById('opengraph').click();
 
 }
+async function clearAll(){
+    layui.use('layer', async function(){
+        var tempUrl = "http://localhost:8081/kg/clearAll";
+        await fetch(tempUrl);
+        alert("知识图谱已重置!");
+
+    })
+}
 function showOntoQueryRes(kgName, queryRes){
 
     layui.use('layer', async function(){
@@ -2338,6 +2346,25 @@ async function constructKG(){
         // $('#OKKG').click(function(){
         //     layer.close(index);
         // })
+        
+    });
+
+}
+
+async function kgClear(){
+
+    layui.use('layer', function(){
+        var layer = layui.layer;
+        index =  layer.open({
+            type: 1,
+            title: "知识图谱重置",
+            content: $('#kgClear'),
+            area: ['500px', '150px']
+        });
+
+        $('#closeCKG').click(function(){
+            layer.close(index);
+        });
         
     });
 

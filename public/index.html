@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>系统界面</title>
+  <title>GeoESI System</title>
   <script src="src/jquery/jquery-3.4.1.min.js"></script>
   <link rel="stylesheet" href="src/layui/css/layui.css">
   <script src="src/layui/layui.js"></script>
@@ -50,7 +50,7 @@
         <a href="javascript:;">数据</a>
         <dl class="layui-nav-child">
           <dd><a onclick="addShp()">导入地图数据</a></dd>
-          <dd><a onclick="test()">导入地层年代表</a></dd>
+          <dd><a onclick="addStratigraphicTimeTable()">导入地层年代表</a></dd>
           <dd><a href="">导入知识图谱</a></dd>
           <dd><a href="">导出知识图谱</a></dd>
         </dl>
@@ -69,6 +69,7 @@
           <dd><a onclick="constructKG()">知识图谱构建</a></dd>
           <dd><a onclick="fuseKG()">知识图谱融合</a></dd>
           <dd><a onclick="queryByKnow()">知识图谱查询</a></dd>
+          <dd><a onclick="kgClear()">知识图谱重置</a></dd>
         </dl>
       </li>
       <li class="layui-nav-item layui-hide-xs">
@@ -660,6 +661,21 @@
       <div class="layui-input-block layui-row">
         <button id="" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7">确定</button>
         <button id="closeFKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
+      </div>
+    </div>
+  </form>
+</div>
+
+<div id="kgClear" style="display: none;">
+  <br>
+  <form action="" class="layui-form layui-form-pane">
+    <div class="layui-form-item" style="text-align: center;">
+      确定重置知识图谱？
+    </div>    
+    <div class="layui-form-item">
+      <div class="layui-input-block layui-row">
+        <button id="OKKG" type="button" lay-submit class="layui-btn layui-btn layui-col-md-offset7" onclick="clearAll()">确定</button>
+        <button id="closeCKG" type="reset" class="layui-btn layui-btn-primary layui-btn">取消</button>
       </div>
     </div>
   </form>

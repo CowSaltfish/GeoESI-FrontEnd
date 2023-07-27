@@ -116,6 +116,23 @@ layui.use('upload', function(){
     })
 })
 
+function addStratigraphicTimeTable(obj){
+    //todo：打开文件对话框
+    console.log("todo打开文件对话框");
+
+    //  files = obj.pushFile();
+    //  clearFiles();
+    //  obj.preview(function(index, file, result){
+    //      // console.log(file);
+    //      if($('#shpName').val() === ''){
+    //          $('#shpName').attr('value', file.name);
+    //      }else{
+    //          $('#shpName').attr('value', $('#shpName').val() + ';' + file.name);
+    //      }
+    //      obj.pushFile();
+    //  })
+}
+
 function clearFiles(){
     for(var x in files){
         delete files[x];
@@ -145,8 +162,6 @@ function addShp(){
             
         })
     });
-
-
 }
 
 function clearShpName(){
